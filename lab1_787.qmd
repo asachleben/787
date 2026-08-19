@@ -1,0 +1,549 @@
+---
+title: "POLI787 Lab 1: Advanced Research Pipelines in `R`"
+format: html
+author: "Audrey Sachleben"
+date: today
+---
+
+```{r setup, include=FALSE}
+# set output options for rendered file
+knitr::opts_chunk$set(
+  eval = TRUE, # evaluate code in rendered output
+  echo = TRUE, # show code in rendered output
+  include = TRUE, # include output in rendered output
+  message = FALSE, # hide messages in rendered output
+  warning = FALSE, # hide warnings in rendered output
+  error = FALSE, # hide errors in rendered output
+  cache = FALSE, # do not cache results between renders
+  tidy = FALSE, # do not reformat code
+  collapse = TRUE, # collapse code and console output in rendered output
+  comment = "#>>>" # prefix for console output lines in rendered output
+)
+```
+
+## Introduction to 787 Lab
+Welcome to POLI 787 Lab! 
+
+<!-- LABS ARE MANDATORY -- SYLLABUS SAYS THEY ARE DUE AT 5PM ON FRIDAY (ask santiago about this) -->
+<!-- - i know last year they were not, but now they are! grinch! -->
+
+basically say what we are going over...grab bag of different topics, that will hopefully be super applicable to you and your research...especially as your getting started working on your own projects from start to finish. having these tools will also make you a desirable coauthor, and so will having good clean reproducible code, which we'll cover today. topics we'll cover that you'll likely find useful are (not limited to) MLE, advanced modeling strategies, text-as-data, networks etc. 
+
+SAYMAN'S LANGUAGE NEED TO CHANGE
+The lab portion of POLI784 is designed to provide you with hands-on experience implementing the concepts and methods you learn about in the lecture portion of the class. We'll be doing this using the `R` programming language. To get you up and running for the semester, this week's lab will focus on introducing you to basic concepts and tools that you will encounter throughout the semester.
+
+While this week will predominantly be structured like a guide / tutorial, future labs will revolve mostly around brief, structured exercises for you to solve. These exercises are mainly designed to give you some practice before having to tackle more involved statistical programming assignments on your problem sets.
+
+## Office Hours and Problem Sets
+SAYMAN'S TEXT NEED TO CHANGE
+As you know, you will have to solve six graded problem sets for this course. Santiago has told you most of what you need to know about them already, but we have decided to add one additional element to support you in your learning this semester -- an oral check-in after each p-set. While you'll be submitting your p-sets in groups, the check-in will be a one-on-one with me. I am not yet completely set on how to do this logistically, but you'll likely be signing up for ~10min office hour slots after each p-set. These check-ins will be rather informal and ungraded, and their purpose is two-fold. First, you'll get a chance to discuss your solutions for the p-set and any challenges you faced while working on it. Essentially, you'll be able to get immediate feedback from me on how to solve issues that you may have encountered. Second, it is an incentive to not free-ride on the assignments, as having these check-ins will allow us to hold each individual group member to account when it comes to explaining the solutions submitted.
+
+When working on the p-sets you should collaborate closely with your group members (and other students in the class, if desired). This will hopefully provide you with a chance to get help from and provide help to others, which should make solving the p-sets easier. At the same time, make sure to make ample use of office hours whenever you feel stuck on the assignments.
+
+With that being said, please take the time to review the information below before solving the (very brief) exercise at the end of the file. Once you have read and worked through this file, you should be equipped with the basic knowledge and tools to tackle the programming tasks you will be presented with throughout the rest of the semester. At the same time, computers and software -- despite being deterministic beasts -- can sometimes be uncooperative ... we've all been there! So, if you find yourself struggling with anything at all related to the labs, please do not hesitate to reach out to me ASAP. A 5-minute debugging session during office hours can save you literal *hours* of time. The same goes for discussing the substantive content of the lecture itself too, of course. Make use of my (and Santiago's) office hours regularly -- it will make this semester a lot more manageable.
+
+
+## AI in Lab
+
+NO AI in lab...what you do on your own time (in accordance withthe syllabus) is up to you...but this is a good space to struggle with code and problem solve. if you don't understand your code, LLMs are not helpful and it's pathetic. 
+
+SAYMAN'S TEXT NEED TO CHANGE
+It might seem absurd to do this when you could also just write a brief prompt and get an LLM to write hundreds of lines of code for you in one go, but especially at the level of programming proficiency that tends to be common among 1st-year grad students, that approach often ends in tragedy. Getting large-scale output from an LLM requires the skills to properly *validate* that output, and that's precisely where things tend to go wrong. By writing pseudo code and getting code completions a few lines at a time, you are necessarily actively involved in reviewing and adapting the code (human in the loop!), which will not only help you spot mistakes but also force you to actively plan out your problem solving approach and closely engage with the output. This will help you learn from the LLM and teach you how to guide it, rather than letting it rob you of an opportunity to learn by letting it guide you.
+
+## Have a Brainstorming activity (to get back into the semester) about what their current a current project pipeline for a research project looks like, aka waht steps they take (specifically) -- and have them write down 5-8 steps/things...or give them a sample research project and have them talk through the research pipeline steps they would take
+
+- where do you store your code, where's your data stored? how do you name your files? etc. 
+- how do you ensure your code is replicable?
+- how do you work with coauthors?
+
+## Research Pipelines in R
+ have an introduction about how this is best practice, you should do this when you are starting to work on your own research (or if you already have your own research, you should start doing this)
+
+basically this lab talks through project set up (enrivonments + benefits), debugging code, and profiling (or optimizing code -- diagnosing and figuring out how to make it run more smoothly)
+
+also give a general reminder on good principles (that we are not going to go over)
+- COMMENT YOUR CODE CLEARLY
+- write clean code
+
+- something that is really important of keeping track of your data (number of observations)
+- knowing your data and checking your data to make sure your code does what you want it to do...and doing this as you go along
+
+<!-- (merging congressional record speeches to speakers -- created duplicates etc (donald payne, people switching party)) -->
+
+## `R` Projects
+Whenever you are undertaking a new research project, it is good practice to create an `RStudio` [project](https://support.posit.co/hc/en-us/articles/200526207-Using-RStudio-Projects) for that entire research project. Your `RStudio` project can help streamline your research pipeline, and make your work easily reproducible. 
+
+Working within an .Rproj has three main advantages: 
+
+- Self-contained workspace: all scripts, data, and outputs for a specific paper (or dissertation chapter) are saved in a single place.
+
+- Automatic working directory: opening an `R` project automatically sets your working directory to the project's root folder. This helps eliminate the need for the machine-specific *setwd()* commands.
+
+- Easier collaboration and replication: the root directory is standardized, so all of your references to other folders or files (such as loading in data) can use relative file paths, which will let your code run more seamlessly on your co-author's machine or on a replication server. 
+
+# Quick Exercise: Creating Lab 1 Project
+Briefly, let's set up a project for today's lab. There are two ways to create a project, either through the `RStudio` menu or through the console. 
+
+Option 1: Point and Click (`RStudio` Menu)
+
+- File > New Project...
+
+- Select New Directory (if you wish to make a 787 lab 1 folder)
+
+- Select Existing Directory (if you have a 787 lab 1 folder and you want to link it)
+
+- Click Create Project
+
+Option 2: Via `RStudio` Console
+Alternatively, you can use the *usethis* package to create a project directly from your console:
+```{r}
+# install.packages("usethis")
+# usethis::create_project("file_path/POLI787_lab1") 
+```
+
+<!--(Following the discussion we just had, everybody needs a 787 folder, a 787 lab folder, and a 787 lab 1 folder) -->
+
+## Organizing Your Project Directory
+While creating an .Rproj file is a helpful first step, I've also found that sticking to a consistent subfolder structure within your project is what really helps keep your research pipeline organized. 
+
+The exact folder names you choose are ultimately a matter of personal preference, but keeping the same structure across all your research projects will save you countless hours (especially if you're returning to a paper months later to address reviewer comments!). 
+
+I've found the following structure to be highly effective. Like I said, what your subfolders in a project look like is up to you, but I think it helps to pick a style and be consistent: 
+
+
+- Code/: Contains all .R, .Rmd, and .py, scripts. I also like to name these numerically to indicate the order in which they run (e.g., 1. pulling_record, 2. cleaning_files, 3. parsing_speeches)
+
+- Data/: Contains all data for the project. I also find it helpful to keep your raw data separate from your clean working data within this folder
+
+- Literature/: self-explanatory
+
+- Paper/: Contains manuscript drafts (I typically save with the date if I'm making large changes rather than overwriting)
+
+- Figures/: Contains all of your saved plots, graphs, regression tables, etc. Basically anything you create in `R` that's going into your paper is saved here
+
+Tip: You can generate this structure in your console right after creating your project:
+
+```{r}
+# create standard sub-directories 
+# purrr::walk(c("Code", "Data", "Literature", "Paper", "Figures"), dir.create)
+```
+
+
+## `R` Environments
+One of the main benefits of projects is when they are used in conjunction with `Posit`'s [virtual environments](https://posit.co/blog/renv-project-environments-for-r/) for `R` via the [renv](https://rstudio.github.io/renv/articles/renv.html) package. While `RStudio` projects help organize your files, they do not manage your packages, which is what the renv package can do for you.
+
+<!-- Ask how many are using renv, I know Sayman talked about it but didn't require it -->
+Using renv replaces your global `R` library with a project-specific library. This provides two big advantages for researchers:
+
+- Version control for packages: Using renv, your project relies only on the exact package versions you installed for that project. Sometimes, you may need to use multiple versions of a package across different projects. It may also be the case that packages from different projects are not compatible with one another (e.g. MASS package masks the 'select' command from dplyr). 
+<!-- One project uses MASS another uses DPLYR and you open your new script to work on the dplyr one then you try to select columns in dplyr and it doesn't work -->
+
+- Streamlining collaboration: renv tracks your dependencies in a renv.lock file. By sharing this file (via Github or even Dropbox), your co-authors can automatically download and install the exact `R` environment you were using. 
+
+## Exercise: Building renv Pipeline
+Let's implement the renv workflow for this project. This is good practice to implement with your own projects as well. Make sure you are currently inside the POLI787_Lab1 project we just created, and run through the following steps in your console:
+
+1. Initialize the environment. For each project, you need to turn on renv. This command creates your project library and generates the first renv.lock file. 
+```{r renv-init, eval=FALSE}
+# install package, if not already present
+if(!require("renv")) install.packages("renv")
+
+# initialize renv for current project
+renv::init()
+```
+
+2. Install packages. Because renv has been initialized, these installed packages will be loaded into your project-specific environment, rather than your global `R` environment There are two options for installing packages: 
+
+- As you normally would, via "install.packages":
+```{r, eval=FALSE}
+# install the tidyr package
+install.packages("tidyr")
+```
+
+- Through renv's specific package installation:
+```{r}
+# install the dplyr package
+renv::install("dplyr@1.1.0") # this can be helpful for installing specific versions of packages
+```
+
+3. Snapshot the environment. Once you've installed packages (and your code is working), you need to save the state of your environment to the renv.lock file. You should do this periodically as you add new packages to your project. 
+```{r}
+# save the current state of your project's library
+renv::snapshot()
+```
+
+4. Restore the environment. This is what is particularly useful when collaborating. If you were to take a turn working in a shared script, you would rely on the renv.lock file to make sure that you and your co-author are working in the exact same `R` environment. You do this using the "restore" command:
+```{r}
+# installs the exact package versions recorded in the renv.lock file for the project
+renv::restore()
+```
+
+5. Updating Packages
+If you ever need to update a packagewithin your renv environment, you can use the update function. Once you've confirmed that your code still runs with the updated package, you should take another snapshot to record the change to the environment. 
+```{r}
+# update a specific package
+renv::update("dplyr")
+
+# save new version of renv.lock file (after confirming code runs)
+renv::snapshot()
+```
+
+
+## Git
+
+```{r}
+1 + 1
+```
+
+## Debugging Code
+ 
+ [debug](https://bookdown.org/rdpeng/rprogdatascience/debugging.html)
+ 
+talk about the importance of debugging code and being able to debug code (rather than just throw it in an LLM). introduce the debugging commands, go through a debugging exercise with code/that covers a topic that you should be familiar with from 784 labs
+intro on debugging code and it's importance...talk about not AI
+
+good first step is always to inspect the error, because sometimes it's super simple. For example, what is the error below?
+
+```{r}
+# try to calculate the mean of several values
+meann(c(1, 2, 3, 4, 5))
+```
+
+Other times, however, debugging code can be a much more complicated process, especially if you're not exactly sure where in your code the error is coming from. In those instances, there are several functions that can help you debug your own code. traceback() displays the sequence of function calls that led up to the most recent error. debug() allows you to walk through a function one statement at a time, so you can inspect your environment after each execution to find the error. debugonce() does the same thing but only for the next call to that function. Finally, browser() allows you to choose a point in your code where the code should pause so that you can inspect the current environment and see if there are errors.
+
+## Debugging Code Exercise
+
+Now that you've learned about the debugging functions, let's put them into practice. As a review of material from POLI 784, we will simulate data and fit an OLS regression model, while debugging code along the way.
+
+Rather than simulating all of our variables inside a single function, we will build our data simulation as a series of smaller functions. The argument each function takes is the number of observations you want to simulate. 
+
+```{r}
+# set seed for reproducibility
+set.seed(9692)
+
+
+### create function to simulate gender
+simulate_gender <- function(N) {
+  
+  # simulate gender
+  X1 <- sample(
+    x = c(
+      rep(0, N*0.5), # male
+      rep(1, N*0.5) # female
+    ),
+    size = N,
+    replace = FALSE
+  )
+  
+  # return simulated gender
+  return(X1)
+}
+
+
+### create function to simulate religious affiliation
+simulate_religion <- function(N) {
+  
+  # create probabilities for religious affiliation
+  rel_probabilities <- c(
+    0.45, # protestant
+    0.20, # catholic
+    0.15, # jewish
+    0.10, # muslim
+    0.10 # other
+  )
+  
+  # simulate religious affiliation
+  X2 <- sample(
+    x = c(1, 2, 3, 4, 5),
+    size = N,
+    replace = TRUE,
+    prob = rel_probability
+  )
+  
+  # convert religious affiliation to factor
+  X2 <- factor(
+    X2,
+    levels = c(1, 2, 3, 4, 5),
+    labels = c(
+      "Protestant",
+      "Catholic",
+      "Jewish",
+      "Muslim",
+      "Other"
+    )
+  )
+  
+  # return simulated religious affiliation
+  return(X2)
+}
+
+
+### create function to simulate demographic variables
+simulate_demographics <- function(N) {
+  
+  # simulate biological sex
+  X1 <- simulate_gender(N)
+  
+  # simulate religious affiliation
+  X2 <- simulate_religion(N)
+  
+  # combine demographic variables
+  demographics <- data.frame(
+    X1 = X1,
+    X2 = X2
+  )
+  
+  # return simulated demographic variables
+  return(demographics)
+}
+
+
+### create function to simulate years of education
+simulate_years_education <- function(N) {
+  
+  # simulate years of education
+  X3 <- sample(
+    x = c(
+      rep(11, N*0.10), # did not complete high school
+      rep(12, N*0.35), # high school
+      rep(16, N*0.35), # college
+      rep(18, N*0.20) # college plus graduate
+    ),
+    size = N,
+    replace = FALSE
+  )
+  
+  # return simulated years of education
+  return(X3)
+}
+
+
+### create function to indicate more than high school education
+create_education_indicator <- function(X3) {
+  
+  # create indicator for graduate education
+  X4 <- ifelse(
+    df$X3 <= 18,
+    0,
+    1
+  )
+  
+  # convert more than high school to factor
+  X4 <- factor(
+    X4,
+    levels = c(0, 1),
+    labels = c(
+      "No Graduate Education",
+      "Graduate Education"
+    )
+  )
+  
+  # return education indicator
+  return(X4)
+}
+
+# create function to simulate education variables
+simulate_education <- function(N) {
+  
+  # simulate years of education
+  X3 <- simulate_years_education(N)
+  
+  # create indicator for more than high school
+  X4 <- create_education_indicator(X3)
+  
+  # combine education variables
+  education <- data.frame(
+    X3 = X3,
+    X4 = X4
+  )
+  
+  # return simulated education variables
+  return(education)
+}
+
+
+### create function to simulate age
+simulate_age <- function(N) {
+  
+  # initialize age vector
+  X5 <- rep(NA, N)
+  
+  # simulate age one observation at a time
+  for (i in 1:N) {
+    
+    # randomly determine age distribution
+    age_distribution <- sample(
+      x = c(1, 2),
+      size = 1,
+      replace = TRUE,
+      prob = c(0.75, 0.25)
+    )
+    
+    # simulate younger age distribution
+    if (age_distribution == 1) {
+      
+      X5[i] <- runif(
+        n = 1,
+        min = 18,
+        max = 70
+      )
+      
+    }
+    
+    # simulate older age distribution
+    if (age_distribution == 2) {
+      
+      age_value <- rnorm(
+        n = 1,
+        mean = 70,
+        sd = 10
+      )
+      
+      if (age_value < 70) {
+        
+        age_value <- 
+          age_value + 
+          (2*(70 - age_value))
+        
+      }
+      
+      X5[i] <- age_value
+      
+    }
+    
+  }
+  
+  # round age to nearest year
+  X5 <- round(X5)
+  
+  # return simulated age
+  return(X5)
+}
+
+
+### create function to simulate outcome variable
+simulate_outcome <- function(df) {
+  
+  # simulate outcome variable
+  Y <- round(
+    35 + 
+    5*df$X1 +
+    3*(df$X2 == "Protestant") + 
+    5*(df$X2 == "Catholic") + 
+    6*(df$X2 == "Jewish") + 
+    (-5)*(df$X2 == "Muslim") +
+    0.75*(df$X3 - 12) +
+    0.25*df$X5 + 
+    rnorm(
+      n = nrow(df),
+      mean = 0,
+      sd = 12.5
+    )
+  )
+  
+  # return simulated outcome
+  return(Y)
+}
+
+
+# create function to simulate full dataset
+simulate_data <- function(N) {
+  
+  # simulate demographic variables
+  demographics <- simulate_demographics(N)
+  
+  # simulate education variables
+  education <- simulate_education(N)
+  
+  # simulate age
+  age <- simulate_age(N)
+  
+  # combine simulated variables
+  df <- data.frame(
+    X1 = demographics$X1,
+    X2 = demographics$X2,
+    X3 = education$X3,
+    X4 = education$X4,
+    X5 = age
+  )
+  
+  # simulate outcome variable
+  df$Y <- simulate_outcome(df)
+  
+  # return simulated data
+  return(df)
+}
+```
+
+Run the function to simulate 3000 observations. When you encounter an error, use the traceback() function to inspect the function calls and find what led to the error. Once you've discovered the error, fix it in the function, and, using words, explain the error below the code chunk.
+```{r}
+# set sample size
+N <- 3000
+
+# simulate data
+df <- simulate_data(N)
+
+# examine the sequence of function calls that produced the previous error
+traceback()
+
+# simulate data again after fixing error
+df <- simulate_data(N)
+
+```
+
+*Response*
+
+Now that you've corrected that error, you are ready to fit an OLS model for your simulated data. Include X1, X2, X4, and X5 as predictors of Y.  
+```{r}
+# fit OLS regression model on simulated data
+model1 <- lm(
+  Y ~ X1 + X2 + X4 + X5,
+  data = df
+)
+
+
+```
+
+Oh no! You encountered another error. Turn on the debug() function and proceed with debugging the code. Fix the error and re-run the model. After you've re-run the model, 1) identify the error using words and 2) interpret the model coefficients. 
+
+```{r}
+# turn debugging on for simulation function
+debug(simulate_data)
+
+# run simulation function again, use debug() to proceed through and correct the error
+df <- simulate_data(N)
+
+
+# after correcting the error, turn debugging off
+undebug(simulate_data)
+
+
+# simulate corrected data
+df <- simulate_data(N)
+
+# fit regression model
+model1 <- lm(
+  Y ~ X1 + X2  + X4 + X5,
+  data = df
+)
+
+# print model summary
+summary(model1)
+
+```
+
+*Response*
+
+## Profiling Code
+
+talk about the importance of debugging code and being able to debug code (rather than just throw it in an LLM). introduce the debugging commands, go through a debugging exercise with code/that covers a topic that you should be familiar with from 784 labs
+
+- make an exercise where students have to profile/then optimize code
+
+```{r}
+1 + 1
+```
+
+
+
+
