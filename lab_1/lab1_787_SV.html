@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Audrey Sachleben">
-<meta name="dcterms.date" content="2026-08-19">
+<meta name="dcterms.date" content="2026-08-20">
 
 <title>POLI787 Lab 1: Advanced Research Pipelines in R</title>
 <style>
@@ -66,17 +66,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="lab1_787_files/libs/clipboard/clipboard.min.js"></script>
-<script src="lab1_787_files/libs/quarto-html/quarto.js" type="module"></script>
-<script src="lab1_787_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="lab1_787_files/libs/quarto-html/popper.min.js"></script>
-<script src="lab1_787_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="lab1_787_files/libs/quarto-html/anchor.min.js"></script>
-<link href="lab1_787_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="lab1_787_files/libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="lab1_787_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="lab1_787_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="lab1_787_files/libs/bootstrap/bootstrap-917079515d91bccb85b543faf8aa8bb6.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="lab1_787_SV_files/libs/clipboard/clipboard.min.js"></script>
+<script src="lab1_787_SV_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="lab1_787_SV_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="lab1_787_SV_files/libs/quarto-html/popper.min.js"></script>
+<script src="lab1_787_SV_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="lab1_787_SV_files/libs/quarto-html/anchor.min.js"></script>
+<link href="lab1_787_SV_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="lab1_787_SV_files/libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="lab1_787_SV_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="lab1_787_SV_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="lab1_787_SV_files/libs/bootstrap/bootstrap-917079515d91bccb85b543faf8aa8bb6.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
@@ -106,7 +106,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">August 19, 2026</p>
+      <p class="date">August 20, 2026</p>
     </div>
   </div>
   
@@ -176,8 +176,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>Easier collaboration and replication: the root directory is standardized, so all of your references to other folders or files (such as loading in data) can use relative file paths, which will let your code run more seamlessly on your co-author’s machine or on a replication server.</p></li>
 </ul>
 </section>
-<section id="quick-exercise-creating-lab-1-project" class="level2">
-<h2 class="anchored" data-anchor-id="quick-exercise-creating-lab-1-project">Quick Exercise: Creating Lab 1 Project</h2>
+<section id="example-creating-lab-1-project" class="level2">
+<h2 class="anchored" data-anchor-id="example-creating-lab-1-project">Example: Creating Lab 1 Project</h2>
 <!-- If you're using RStudio and don't know how to set up a project...you can run through this code. If you're using Positron, there's no projects because it's more automatically built in -->
 <p>Briefly, let’s set up a project for today’s lab. There are two ways to create a project, either through the <code>RStudio</code> menu or through the console.</p>
 <p>Option 1: Point and Click (<code>RStudio</code> Menu)</p>
@@ -190,8 +190,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Option 2: Via <code>RStudio</code> Console</p>
 <p>Alternatively, you can use the <em>usethis</em> package to create a project directly from your console:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("usethis")</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># usethis::create_project("file_path/POLI787_lab1") </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a> <span class="fu">install.packages</span>(<span class="st">"usethis"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a> usethis<span class="sc">::</span><span class="fu">create_project</span>(<span class="st">"file_path/POLI787_lab1"</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <!--(Following the discussion we just had, everybody needs a 787 folder, a 787 lab folder, and a 787 lab 1 folder) -->
 </section>
@@ -210,7 +210,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Tip: You can generate this structure in your console right after creating your project:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create standard sub-directories </span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># purrr::walk(c("Code", "Data", "Literature", "Paper", "Figures"), dir.create)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">walk</span>(<span class="fu">c</span>(<span class="st">"Code"</span>, <span class="st">"Data"</span>, <span class="st">"Literature"</span>, <span class="st">"Paper"</span>, <span class="st">"Figures"</span>), dir.create)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="environments" class="level2">
@@ -223,8 +223,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>Streamlining collaboration: renv tracks your dependencies in a renv.lock file. By sharing this file (via Github or even Dropbox), your co-authors can automatically download and install the exact <code>R</code> environment you were using.</p></li>
 </ul>
 </section>
-<section id="exercise-building-renv-pipeline" class="level2">
-<h2 class="anchored" data-anchor-id="exercise-building-renv-pipeline">Exercise: Building renv Pipeline</h2>
+<section id="example-building-renv-pipeline" class="level2">
+<h2 class="anchored" data-anchor-id="example-building-renv-pipeline">Example: Building renv Pipeline</h2>
 <!-- I've provided a bunch of code for how you can set this up. -->
 <p>Let’s implement the renv workflow for this project. This is good practice to implement with your own projects as well. Make sure you are currently inside the POLI787_Lab1 project we just created. If you are working in Positron, make sure you are in a 787 Lab 1 folder. Then, run through the following steps in your console:</p>
 <ol type="1">
@@ -252,31 +252,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install the dplyr package</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">install</span>(<span class="st">"dplyr@1.1.0"</span>) <span class="co"># this can be helpful for installing specific versions of packages</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; - Querying repositories for available source packages ... Done!</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; The following package(s) will be installed:</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; - dplyr [1.1.0]</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; These packages will be installed into "/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library".</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; # Installing packages --------------------------------------------------------</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; [32m✔[0m dplyr 1.1.0                              [copied from cache]</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Successfully installed 1 package in 45 milliseconds.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">install</span>(<span class="st">"dplyr@1.1.0"</span>) <span class="co"># this can be helpful for installing specific versions of packages</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ol start="3" type="1">
 <li>Snapshot the environment. Once you’ve installed packages (and your code is working), you need to save the state of your environment to the renv.lock file. You should do this periodically as you add new packages to your project.</li>
 </ol>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># save the current state of your project's library</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">snapshot</span>()</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; - Lockfile written to "~/Dropbox/TEACHING/1. 787 Fall 2026/Labs/lab_1/renv.lock".</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">snapshot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ol start="4" type="1">
 <li>Restore the environment. This is what is particularly useful when collaborating. If you were to take a turn working in a shared script, you would rely on the renv.lock file to make sure that you and your co-author are working in the exact same <code>R</code> environment. You do this using the “restore” command:</li>
 </ol>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># installs the exact package versions recorded in the renv.lock file for the project</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">restore</span>()</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; - The library is already synchronized with the lockfile.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">restore</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ol start="5" type="1">
 <li>Updating Packages If you ever need to update a packagewithin your renv environment, you can use the update function. Once you’ve confirmed that your code still runs with the updated package, you should take another snapshot to record the change to the environment.</li>
@@ -284,24 +274,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># update a specific package</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">update</span>(<span class="st">"dplyr"</span>)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; - Querying repositories for available binary packages ... Done!</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; - Checking for updated packages ... Done!</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; The following package(s) will be updated:</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; # CRAN -----------------------------------------------------------------------</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; - dplyr   [repo: https://packagemanager.posit.co/cran/latest -&gt; CRAN; ver: 1.1.0 -&gt; 1.2.1]</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; The following package(s) will be installed:</span></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; - dplyr [1.2.1]</span></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; These packages will be installed into "/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library".</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; # Installing packages --------------------------------------------------------</span></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; [32m✔[0m dplyr 1.2.1                              [copied from cache]</span></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Successfully installed 1 package in 40 milliseconds.</span></span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co"># save new version of renv.lock file (after confirming code runs)</span></span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">snapshot</span>()</span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; - The lockfile is already up to date.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># save new version of renv.lock file (after confirming code runs)</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">snapshot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="git-and-github" class="level2">
@@ -598,71 +573,65 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Run the function to simulate 3000 observations. When you encounter an error, use the traceback() function to inspect the function calls and find what led to the error. Once you’ve discovered the error, fix it in the function, and, using words, briefly explain the error below the code chunk.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set sample size</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">3000</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> _____</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate data</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">simulate_data</span>(N)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">__________</span>(____)</span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># examine the sequence of function calls that produced the previous error</span></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="fu">traceback</span>()</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>__________</span>
 <span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate data again after fixing error</span></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">simulate_data</span>(N)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">__________</span>(____)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><em>Response</em></p>
 <p>Now that you’ve corrected that error, you are ready to fit an OLS model for your simulated data. Include X1, X2, X4, and X5 as predictors of Y.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit OLS regression model on simulated data</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>model1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  Y <span class="sc">~</span> X1 <span class="sc">+</span> X2 <span class="sc">+</span> X4 <span class="sc">+</span> X5,</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>model1 <span class="ot">&lt;-</span> ______________</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Oh no! You encountered another error. Turn on the debug() function and proceed with debugging the code. Fix the error and re-run the model. After you’ve re-run the model, 1) identify the error using words and 2) interpret the model coefficients.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># turn debugging on for simulation function</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">debug</span>(simulate_data)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">_________</span>(__________)</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># run simulation function again, use debug() to proceed through and correct the error</span></span>
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">simulate_data</span>(N)</span>
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co"># after correcting the error, turn debugging off</span></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="fu">undebug</span>(simulate_data)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="fu">____________</span>(__________)</span>
 <span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate corrected data</span></span>
 <span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">simulate_data</span>(N)</span>
 <span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="co"># fit regression model</span></span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>model1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  Y <span class="sc">~</span> X1 <span class="sc">+</span> X2  <span class="sc">+</span> X4 <span class="sc">+</span> X5,</span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df</span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="co"># print model summary</span></span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>model1 <span class="ot">&lt;-</span> _______</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="co"># inspect model results</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="fu">__________</span>(model1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><em>Response</em></p>
 </section>
-<section id="profiling-code" class="level2">
-<h2 class="anchored" data-anchor-id="profiling-code">Profiling Code</h2>
+<section id="profiling-code-exercise" class="level2">
+<h2 class="anchored" data-anchor-id="profiling-code-exercise">Profiling Code Exercise</h2>
 <p>Returning to the code you previously debugged, while we now have working code, we don’t necessarily have efficient code. As your research pipelines become larger and more complex, inefficient code can increase the amount of time it takes to complete your analysis, especially if you are working with very large datasets.</p>
 <p><a href="https://bookdown.org/rdpeng/rprogdatascience/profiling-r-code.html">Profiling</a> is the process of determining where code is spending its time while running. Rather than just guess which parts of code are inefficient, profiling lets us identify which functions or operations accound for the largest portions of the total runtime. Using these diagnostics, we can then focus on optimizing the parts of our code where improving efficiency will matter most.</p>
 <p>Before profiling individual pieces of code, we can first use system.time() to see how long the entire data simulation takes.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set sample size for profiling</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">1000000</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set sample size to 1000000 for profiling</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> _______</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># measure how long it takes to simulate data</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>({</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">_________</span>({</span>
 <span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">simulate_data</span>(N)</span>
 <span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>While system.time() tells us how long it takes to complete this simulation generally, it does not tell us which parts of the simulation function take up the most time. To examine our code at a more granular level, we csn use Rprof(). Rprof() records which functions are being executed and where the code is spending the most time running. Rprof() doesn’t replace or change any of the code that’s running, it’s just observing and tracking what R is doing while your code is running. We can then use the summaryRprof() to inspect the results and identify where out code is spending the most time.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># start profiling revised code</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">Rprof</span>(<span class="st">"simulation_profile.out"</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">________</span>(<span class="st">"simulation_profile.out"</span>)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate data</span></span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">simulate_data</span>(N)</span>
@@ -671,14 +640,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="fu">Rprof</span>(<span class="cn">NULL</span>)</span>
 <span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co"># summarize profiling results</span></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>profiling_results <span class="ot">&lt;-</span> <span class="fu">summaryRprof</span>(</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>profiling_results <span class="ot">&lt;-</span> <span class="fu">__________</span>(</span>
 <span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">"simulation_profile.out"</span></span>
 <span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="co"># examine profiling results</span></span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>profiling_results<span class="sc">$</span>by.total</span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="co"># profiling_results$by.self</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>profiling_results<span class="sc">$</span>by.total</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Inspect the profiling results, then answer a few questions about the code. First, which functions accounts for the largest portion of runtime?</p>
 <p><em>Response</em></p>

@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Audrey Sachleben">
+<meta name="dcterms.date" content="2026-08-20">
+
+<title>POLI787 Lab 1: Advanced Research Pipelines in R</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="lab1_787_AK_files/libs/clipboard/clipboard.min.js"></script>
+<script src="lab1_787_AK_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="lab1_787_AK_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="lab1_787_AK_files/libs/quarto-html/popper.min.js"></script>
+<script src="lab1_787_AK_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="lab1_787_AK_files/libs/quarto-html/anchor.min.js"></script>
+<link href="lab1_787_AK_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="lab1_787_AK_files/libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="lab1_787_AK_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="lab1_787_AK_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="lab1_787_AK_files/libs/bootstrap/bootstrap-917079515d91bccb85b543faf8aa8bb6.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">POLI787 Lab 1: Advanced Research Pipelines in <code>R</code></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Audrey Sachleben </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">August 20, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction-to-lab" class="level2">
+<h2 class="anchored" data-anchor-id="introduction-to-lab">Introduction to Lab</h2>
+<p>Welcome to POLI 787 Lab! The lab portion of 787 is designed to expose you to and give you hands-on experience with a range of tools and methods that will be useful as you begin conducting more of your own research from start to finish. The topics we’ll cover this semester will be somewhat of a mixed bag. Rather than going super in-depth on any particular topic, our goal is to introduce you to a varaity of techniques that you are likely to encounter in your own research. Hopefully having a bit of familiarity with a variety of techniques through 787 will allow you to become a more effective and independent research, and will help prepare you to learn about and try new methods beyond the scope of this class.</p>
+<p>While some labs will introduce new tools/packages through short demonstrations, most will revolve around brief, structured exercises for you to complete. The goal is to give you practice learning about and implementing these methods by yourself in a controlled situation before you encounter them in more involved problem sets or begin applying them in your own research. Today’s lab is a bit different because it’s focused more on project pipelines and general principles rather than particular methods or tools.</p>
+<p>A note about labs: attendance in lab is mandatory as is completing the weekly lab assignments!</p>
+<!-- LABS ARE MANDATORY -- SYLLABUS SAYS THEY ARE DUE AT 5PM ON FRIDAY (ask santiago about this) -->
+<!-- - i know last year they were not, but now they are! grinch! -->
+</section>
+<section id="office-hours" class="level2">
+<h2 class="anchored" data-anchor-id="office-hours">Office Hours</h2>
+<p>Santiago and I are resources for you. Make use of office hours! If you are stuck, confused on an assignment, unsure whether your approach makes sense, or anything else, please come see Santiago or me. A quick debugging session during office hours can save you tons of time spent spinning your wheels and can make things feel a lot more manageable. The sign up for my office hours is on the Canvas site. If you don’t sign up but still have a question of would like to chat, you can also stop by without an appointment.</p>
+</section>
+<section id="ai-in-lab" class="level2">
+<h2 class="anchored" data-anchor-id="ai-in-lab">AI in Lab</h2>
+<p>During lab, please refrain from using AI tools to complete the exercises. What you do outside of lab, in accordance with the course syllabus, is up to you. AI is an excellent programming tool, and you should definitely make use of it. However, lab is a risk-free environment where you can struggle with code, make mistakes, and work through problems on your own or with classmates.</p>
+<p>As you’ve definitely heard by now, AI is most useful when you understand the code well enough to evaluate what it gives you. If you do not understand your own code, it is very easy to go down an unproductive rabbit hole trying to fix one AI-generated solution with another. The goal of lab is therefore to build the skills you need to use AI effetively later: understanding your code, diagnosing problems, and knowing whether a proposed solution actually makes sense.</p>
+<p>As Santiago has said, you are responsible for understanding every line of your code. If Santiago or I see code that we suspect is generated by AI, we reserve the right to make an office hours appointment with you and have you explain your code. This is not meant to be a scary thing, this is meant to be a committment device so that you focus on learning how to code, understanding your code, and ultimately get the most out of 787.</p>
+<!-- In lab (and outside!), if you don't know how to do something you should 1) ask a classmate and 2) ask me BEFORE going to AI -->
+</section>
+<section id="research-pipeline-brainstorm" class="level2">
+<h2 class="anchored" data-anchor-id="research-pipeline-brainstorm">Research Pipeline Brainstorm</h2>
+<p>Before we get into the technical material for today, take a few minutes to think concretely about how you currently organize a research project from start to finish (or how you would). Working with a partner, discuss 5-8 concrete steps in your current research pipeline.</p>
+<p>Helpful questions to consider:</p>
+<ul>
+<li><p>Where are your raw data stored, and how do you distinguish them from cleaned or processed data?</p></li>
+<li><p>Where is your code stored and how is it organized across scripts or folders?</p></li>
+<li><p>How do you name files and datasets?</p></li>
+<li><p>How do you keep track of changes to your code or your analysis?</p></li>
+<li><p>How do you make sure that your results, tables, and figures can be reproduced from the underlying data and code?</p></li>
+<li><p>If you reren the project from the beginning six months from now, would you know which scripts to run and in what order?</p></li>
+<li><p>Where in your current workflow are you most likely to lose track of what you did or why you did it?</p></li>
+</ul>
+<!-- I know you're gonna hate this and we won't do it everytime, I promise, but it actually is relevant to the lab for today -->
+</section>
+<section id="research-pipelines-in-r" class="level2">
+<h2 class="anchored" data-anchor-id="research-pipelines-in-r">Research Pipelines in R</h2>
+<!-- Part of the reason we're talking about this is because how you develop your research pipeline is crucial, both for the quality of your work and your own sanity! get an R&R and then months later have to deal with it. worst thing that could happen is you get an R&R (or accepted) and you don't have a good pipeline so can't reproduce your results and that goes away-->
+<p>As you begin working on your own projects, it is important to develop a consistent workflow for organizing your data, code, and analysis. Good research pipelines make projects easier to manage, to return to months later, and to reproduce. If you already have ongoing research projects, now is a good time to start thinking critically about your current workflow.</p>
+<p>Today’s lab focuses on three parts of building and maintaining a research pipeline in <code>R</code>. First, we’ll discuss project setup and environments, including how to organize projects so that your code is portable and reproducible. Second, we’ll talk about debugging code and work through an example. Finally, we will introduce profiling as a tool for diagnosing inefficient code and identifying where changes can be made to optimize your code.</p>
+<p>There are also several broader principles that we will not spend much time reviewing today but that you should always practice through your research:</p>
+<ul>
+<li><p><strong>Comment your code clearly!</strong> You should be able to understand why you made a particular decision when you return to a script months later.</p></li>
+<li><p><strong>Write clean and readable code.</strong> Consistency and clarity in naming, formatting, and organization make both debugging and collaborating much easier.</p></li>
+<li><p><strong>Check your work as you go.</strong> Do not wait until the end of a long pipeline to see whether the final result looks plausible. Inspect the intermediate dataframes, variables, and outputs throughout the entire process to make sure your code is doing what you intended.</p></li>
+</ul>
+<p>Broadly, your goal should not just be to have code that runs. Rather, you should try to build a research process/workflow in which you can understand, reproduce, and defend each step (and decision) between the original data and your final results.</p>
+<!-- (merging congressional record speeches to speakers -- created duplicates etc (donald payne, people switching party)) -->
+</section>
+<section id="r-projects-rstudio-specific" class="level2">
+<h2 class="anchored" data-anchor-id="r-projects-rstudio-specific"><code>R</code> Projects – <code>RStudio</code> Specific</h2>
+<p>Whenever you are undertaking a new research project, it is good practice to create an <code>RStudio</code> <a href="https://support.posit.co/hc/en-us/articles/200526207-Using-RStudio-Projects">project</a> for that entire research project. Your <code>RStudio</code> project can help streamline your research pipeline, and make your work easily reproducible.</p>
+<p>Working within an .Rproj has three main advantages:</p>
+<ul>
+<li><p>Self-contained workspace: all scripts, data, and outputs for a specific paper (or dissertation chapter) are saved in a single place.</p></li>
+<li><p>Automatic working directory: opening an <code>R</code> project automatically sets your working directory to the project’s root folder. This helps eliminate the need for the machine-specific <em>setwd()</em> commands.</p></li>
+<li><p>Easier collaboration and replication: the root directory is standardized, so all of your references to other folders or files (such as loading in data) can use relative file paths, which will let your code run more seamlessly on your co-author’s machine or on a replication server.</p></li>
+</ul>
+</section>
+<section id="example-creating-lab-1-project" class="level2">
+<h2 class="anchored" data-anchor-id="example-creating-lab-1-project">Example: Creating Lab 1 Project</h2>
+<!-- If you're using RStudio and don't know how to set up a project...you can run through this code. If you're using Positron, there's no projects because it's more automatically built in -->
+<p>Briefly, let’s set up a project for today’s lab. There are two ways to create a project, either through the <code>RStudio</code> menu or through the console.</p>
+<p>Option 1: Point and Click (<code>RStudio</code> Menu)</p>
+<ul>
+<li><p>File &gt; New Project…</p></li>
+<li><p>Select New Directory (if you wish to make a 787 lab 1 folder)</p></li>
+<li><p>Select Existing Directory (if you have a 787 lab 1 folder and you want to link it)</p></li>
+<li><p>Click Create Project</p></li>
+</ul>
+<p>Option 2: Via <code>RStudio</code> Console</p>
+<p>Alternatively, you can use the <em>usethis</em> package to create a project directly from your console:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a> <span class="fu">install.packages</span>(<span class="st">"usethis"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a> usethis<span class="sc">::</span><span class="fu">create_project</span>(<span class="st">"file_path/POLI787_lab1"</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<!--(Following the discussion we just had, everybody needs a 787 folder, a 787 lab folder, and a 787 lab 1 folder) -->
+</section>
+<section id="organizing-your-project-directory" class="level2">
+<h2 class="anchored" data-anchor-id="organizing-your-project-directory">Organizing Your Project Directory</h2>
+<p>While creating an .Rproj file is a helpful first step, I’ve also found that sticking to a consistent subfolder structure within your project is what really helps keep your research pipeline organized. The same is true if you’re just working in a Dropbox folder.</p>
+<p>The exact folder names you choose are ultimately a matter of personal preference, but keeping the same structure across all your research projects will save you countless hours (especially if you’re returning to a paper months later to address reviewer comments!).</p>
+<p>I’ve found the following structure to be highly effective. Like I said, what your subfolders in a project look like is up to you, but I think it helps to pick a style and be consistent:</p>
+<ul>
+<li><p>Code/: Contains all .R, .Rmd, and .py, scripts. I also like to name these numerically to indicate the order in which they run (e.g., 1. pulling_record, 2. cleaning_files, 3. parsing_speeches)</p></li>
+<li><p>Data/: Contains all data for the project. I also find it helpful to keep your raw data separate from your clean working data within this folder</p></li>
+<li><p>Literature/: self-explanatory</p></li>
+<li><p>Paper/: Contains manuscript drafts (I typically save with the date if I’m making large changes rather than overwriting)</p></li>
+<li><p>Figures/: Contains all of your saved plots, graphs, regression tables, etc. Basically anything you create in <code>R</code> that’s going into your paper is saved here</p></li>
+</ul>
+<p>Tip: You can generate this structure in your console right after creating your project:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a> create standard sub<span class="sc">-</span>directories </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a> purrr<span class="sc">::</span><span class="fu">walk</span>(<span class="fu">c</span>(<span class="st">"Code"</span>, <span class="st">"Data"</span>, <span class="st">"Literature"</span>, <span class="st">"Paper"</span>, <span class="st">"Figures"</span>), dir.create)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="environments" class="level2">
+<h2 class="anchored" data-anchor-id="environments">Environments</h2>
+<p>One of the main benefits of projects is when they are used in conjunction with <code>Posit</code>’s <a href="https://posit.co/blog/renv-project-environments-for-r/">virtual environments</a> for <code>R</code> via the <a href="https://rstudio.github.io/renv/articles/renv.html">renv</a> package. While <code>RStudio</code> projects help organize your files, they do not manage your packages, which is what the renv package can do for you.</p>
+<!-- Ask how many are using renv, I know Sayman talked about it but didn't require it -->
+<p>Using renv replaces your global <code>R</code> library with a project-specific library. This provides two big advantages for researchers:</p>
+<ul>
+<li><p>Version control for packages: Using renv, your project relies only on the exact package versions you installed for that project. Sometimes, you may need to use multiple versions of a package across different projects. It may also be the case that packages from different projects are not compatible with one another (e.g.&nbsp;MASS package masks the ‘select’ command from dplyr). <!-- One project uses MASS another uses DPLYR and you open your new script to work on the dplyr one then you try to select columns in dplyr and it doesn't work --></p></li>
+<li><p>Streamlining collaboration: renv tracks your dependencies in a renv.lock file. By sharing this file (via Github or even Dropbox), your co-authors can automatically download and install the exact <code>R</code> environment you were using.</p></li>
+</ul>
+</section>
+<section id="example-building-renv-pipeline" class="level2">
+<h2 class="anchored" data-anchor-id="example-building-renv-pipeline">Example: Building renv Pipeline</h2>
+<!-- I've provided a bunch of code for how you can set this up. -->
+<p>Let’s implement the renv workflow for this project. This is good practice to implement with your own projects as well. Make sure you are currently inside the POLI787_Lab1 project we just created. If you are working in Positron, make sure you are in a 787 Lab 1 folder. Then, run through the following steps in your console:</p>
+<ol type="1">
+<li>Initialize the environment. For each project, you need to turn on renv. This command creates your project library and generates the first renv.lock file.</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install package, if not already present</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">require</span>(<span class="st">"renv"</span>)) <span class="fu">install.packages</span>(<span class="st">"renv"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># initialize renv for current project</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">init</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ol start="2" type="1">
+<li>Install packages. Because renv has been initialized, these installed packages will be loaded into your project-specific environment, rather than your global <code>R</code> environment There are two options for installing packages:</li>
+</ol>
+<ul>
+<li>As you normally would, via “install.packages”:</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install the tidyr package</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"tidyr"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li>Through renv’s specific package installation:</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install the dplyr package</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">install</span>(<span class="st">"dplyr@1.1.0"</span>) <span class="co"># this can be helpful for installing specific versions of packages</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ol start="3" type="1">
+<li>Snapshot the environment. Once you’ve installed packages (and your code is working), you need to save the state of your environment to the renv.lock file. You should do this periodically as you add new packages to your project.</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># save the current state of your project's library</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">snapshot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ol start="4" type="1">
+<li>Restore the environment. This is what is particularly useful when collaborating. If you were to take a turn working in a shared script, you would rely on the renv.lock file to make sure that you and your co-author are working in the exact same <code>R</code> environment. You do this using the “restore” command:</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># installs the exact package versions recorded in the renv.lock file for the project</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">restore</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ol start="5" type="1">
+<li>Updating Packages If you ever need to update a packagewithin your renv environment, you can use the update function. Once you’ve confirmed that your code still runs with the updated package, you should take another snapshot to record the change to the environment.</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># update a specific package</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">update</span>(<span class="st">"dplyr"</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># save new version of renv.lock file (after confirming code runs)</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">snapshot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="git-and-github" class="level2">
+<h2 class="anchored" data-anchor-id="git-and-github">Git and GitHub</h2>
+<p>Git and GitHub are tools for keeping track of changes to your research projects as they develop. Git is a version control system that records changes to files over time, which allows you to see what changed and when, and to return to an earlier version of a file if something goes wrong. GitHub is an online platform that works with Git to store repositories (collections of files) remotely and makes it easier to share projects and collaborate with others.</p>
+<p>Version control is a helpful part of your research pipeline because it provides a history of the code you’ve written, the analysis you’ve done, and what changes you and your coauthors have made. Keeping a clear record of these changes makes it much easier to identify when something went wrong, recover earlier versions of your work, and understand how your analysis developed over time. Version control also makes it much easier to collaborate with coauthors without passing different versions of scripts and files back and forth.</p>
+<p>Most used Git commands:</p>
+<ul>
+<li><p><strong>Clone</strong>: Creates a local copy of an existing GitHub repository</p></li>
+<li><p><strong>Pull</strong>: Gets the newest changes from GitHub and incorporates them into your local repository</p></li>
+<li><p><strong>Add</strong>: Stages your changed files for the next commit</p></li>
+<li><p><strong>Commit</strong>: Saves the stages changes as a new version of the project</p></li>
+<li><p><strong>Push</strong>: Uploads your local commits (changed files) to GitHub</p></li>
+</ul>
+<p>The basic workflow for GitHub is therefore:</p>
+<p>GitHub –&gt; pull –&gt; Local Repository –&gt; add –&gt; Staging Area –&gt; commit –&gt; Local Repository –&gt; push –&gt; GitHub</p>
+<!-- BTW you work with git in your terminal (either on your computer or in positron) -->
+</section>
+<section id="debugging-code" class="level2">
+<h2 class="anchored" data-anchor-id="debugging-code">Debugging Code</h2>
+<!-- i learned what debugger is last week when writing this lab, the function is what i'm supposed to teach you, but you can also do this manually...and that's what I usually do, run your code line by line and inspect the output after each time, so you can see exactly where something went wrong -->
+<p><a href="https://bookdown.org/rdpeng/rprogdatascience/debugging.html">Debugging</a> is an evitable part of writing code. As your code becomes more complex, the likelihood that you will encounter errors, unexpected outputs, or code that runs different than you expected increases. Being able to identify the source of these problems and correct them is critical.</p>
+<p>Although LLMs can be useful for helping diagnose and fix coding problems, they are definitely not a substitute for understanding how your own code works. In order to be able to effectively work with an LLM to fix your code, you need to be able to inspect the objects at various stages of your code and be able to evaluate whether a proposed solution actually addresses the underlying problem. Developing these skills and knowing your coding principles will also make you better at using tools like LLMs because you will be prepared to evaluate suggestions from an LLM rather than simply implementing suggested changes without understanding them. Also, LLMs can make mistakes! As the author responsible for a research project, you are ultimately responsible for each line of code and everything that you produce. Relying blindly on an LLM is not a good strategy, but understanding your code is.</p>
+<p>When debugging your code, a good first step is always to inspect the error, because sometimes it’s super simple. For example, what is the error below?</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># try to calculate the mean of several values</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>))</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; [1] 3</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Other times, however, debugging code can be a much more complicated process, especially if you’re not exactly sure where in your code the error is coming from. In those instances, there are several functions that can help you debug your own code, without just asking an LLM. traceback() displays the sequence of function calls that led up to the most recent error. debug() allows you to walk through a function one statement at a time, so you can inspect your environment after each execution to find the error. debugonce() does the same thing but only for the next call to that function. Finally, browser() allows you to choose a point in your code where the code should pause so that you can inspect the current environment and see if there are errors.</p>
+</section>
+<section id="debugging-code-exercise" class="level2">
+<h2 class="anchored" data-anchor-id="debugging-code-exercise">Debugging Code Exercise</h2>
+<p>Now that you’ve learned about the debugging functions, let’s put them into practice. As a review of material from POLI 784, we will simulate data and fit an OLS regression model, while debugging code along the way.</p>
+<p>Rather than simulating all of our variables inside a single function, we will build our data simulation as a series of smaller functions. The argument each function takes is the number of observations you want to simulate.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set seed for reproducibility</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">9692</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="do">### create function to simulate gender</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>simulate_gender <span class="ot">&lt;-</span> <span class="cf">function</span>(N) {</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate gender</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  X1 <span class="ot">&lt;-</span> <span class="fu">sample</span>(</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">c</span>(</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rep</span>(<span class="dv">0</span>, N<span class="sc">*</span><span class="fl">0.5</span>), <span class="co"># male</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rep</span>(<span class="dv">1</span>, N<span class="sc">*</span><span class="fl">0.5</span>) <span class="co"># female</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> N,</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">replace =</span> <span class="cn">FALSE</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return simulated gender</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(X1)</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="do">### create function to simulate religious affiliation</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>simulate_religion <span class="ot">&lt;-</span> <span class="cf">function</span>(N) {</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create probabilities for religious affiliation</span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>  rel_probabilities <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>    <span class="fl">0.45</span>, <span class="co"># protestant</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    <span class="fl">0.20</span>, <span class="co"># catholic</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>    <span class="fl">0.15</span>, <span class="co"># jewish</span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>    <span class="fl">0.10</span>, <span class="co"># muslim</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>    <span class="fl">0.10</span> <span class="co"># other</span></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate religious affiliation</span></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>  X2 <span class="ot">&lt;-</span> <span class="fu">sample</span>(</span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>),</span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> N,</span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">replace =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">prob =</span> rel_probabilities</span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>  <span class="co"># convert religious affiliation to factor</span></span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>  X2 <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>    X2,</span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>),</span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">c</span>(</span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Protestant"</span>,</span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Catholic"</span>,</span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Jewish"</span>,</span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Muslim"</span>,</span>
+<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Other"</span></span>
+<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return simulated religious affiliation</span></span>
+<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(X2)</span>
+<span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a><span class="do">### create function to simulate demographic variables</span></span>
+<span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a>simulate_demographics <span class="ot">&lt;-</span> <span class="cf">function</span>(N) {</span>
+<span id="cb10-63"><a href="#cb10-63" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-64"><a href="#cb10-64" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate biological sex</span></span>
+<span id="cb10-65"><a href="#cb10-65" aria-hidden="true" tabindex="-1"></a>  X1 <span class="ot">&lt;-</span> <span class="fu">simulate_gender</span>(N)</span>
+<span id="cb10-66"><a href="#cb10-66" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-67"><a href="#cb10-67" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate religious affiliation</span></span>
+<span id="cb10-68"><a href="#cb10-68" aria-hidden="true" tabindex="-1"></a>  X2 <span class="ot">&lt;-</span> <span class="fu">simulate_religion</span>(N)</span>
+<span id="cb10-69"><a href="#cb10-69" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-70"><a href="#cb10-70" aria-hidden="true" tabindex="-1"></a>  <span class="co"># combine demographic variables</span></span>
+<span id="cb10-71"><a href="#cb10-71" aria-hidden="true" tabindex="-1"></a>  demographics <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb10-72"><a href="#cb10-72" aria-hidden="true" tabindex="-1"></a>    <span class="at">X1 =</span> X1,</span>
+<span id="cb10-73"><a href="#cb10-73" aria-hidden="true" tabindex="-1"></a>    <span class="at">X2 =</span> X2</span>
+<span id="cb10-74"><a href="#cb10-74" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-75"><a href="#cb10-75" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-76"><a href="#cb10-76" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return simulated demographic variables</span></span>
+<span id="cb10-77"><a href="#cb10-77" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(demographics)</span>
+<span id="cb10-78"><a href="#cb10-78" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-79"><a href="#cb10-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-80"><a href="#cb10-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-81"><a href="#cb10-81" aria-hidden="true" tabindex="-1"></a><span class="do">### create function to simulate years of education</span></span>
+<span id="cb10-82"><a href="#cb10-82" aria-hidden="true" tabindex="-1"></a>simulate_years_education <span class="ot">&lt;-</span> <span class="cf">function</span>(N) {</span>
+<span id="cb10-83"><a href="#cb10-83" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-84"><a href="#cb10-84" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate years of education</span></span>
+<span id="cb10-85"><a href="#cb10-85" aria-hidden="true" tabindex="-1"></a>  X3 <span class="ot">&lt;-</span> <span class="fu">sample</span>(</span>
+<span id="cb10-86"><a href="#cb10-86" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">c</span>(</span>
+<span id="cb10-87"><a href="#cb10-87" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rep</span>(<span class="dv">11</span>, N<span class="sc">*</span><span class="fl">0.10</span>), <span class="co"># did not complete high school</span></span>
+<span id="cb10-88"><a href="#cb10-88" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rep</span>(<span class="dv">12</span>, N<span class="sc">*</span><span class="fl">0.35</span>), <span class="co"># high school</span></span>
+<span id="cb10-89"><a href="#cb10-89" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rep</span>(<span class="dv">16</span>, N<span class="sc">*</span><span class="fl">0.35</span>), <span class="co"># college</span></span>
+<span id="cb10-90"><a href="#cb10-90" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rep</span>(<span class="dv">18</span>, N<span class="sc">*</span><span class="fl">0.20</span>) <span class="co"># college plus graduate</span></span>
+<span id="cb10-91"><a href="#cb10-91" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb10-92"><a href="#cb10-92" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> N,</span>
+<span id="cb10-93"><a href="#cb10-93" aria-hidden="true" tabindex="-1"></a>    <span class="at">replace =</span> <span class="cn">FALSE</span></span>
+<span id="cb10-94"><a href="#cb10-94" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-95"><a href="#cb10-95" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-96"><a href="#cb10-96" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return simulated years of education</span></span>
+<span id="cb10-97"><a href="#cb10-97" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(X3)</span>
+<span id="cb10-98"><a href="#cb10-98" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-99"><a href="#cb10-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-100"><a href="#cb10-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-101"><a href="#cb10-101" aria-hidden="true" tabindex="-1"></a><span class="do">### create function to indicate more than high school education</span></span>
+<span id="cb10-102"><a href="#cb10-102" aria-hidden="true" tabindex="-1"></a>create_education_indicator <span class="ot">&lt;-</span> <span class="cf">function</span>(X3) {</span>
+<span id="cb10-103"><a href="#cb10-103" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-104"><a href="#cb10-104" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create indicator for graduate education</span></span>
+<span id="cb10-105"><a href="#cb10-105" aria-hidden="true" tabindex="-1"></a>  X4 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(</span>
+<span id="cb10-106"><a href="#cb10-106" aria-hidden="true" tabindex="-1"></a>    X3 <span class="sc">&lt;</span> <span class="dv">18</span>,</span>
+<span id="cb10-107"><a href="#cb10-107" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0</span>,</span>
+<span id="cb10-108"><a href="#cb10-108" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span></span>
+<span id="cb10-109"><a href="#cb10-109" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-110"><a href="#cb10-110" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-111"><a href="#cb10-111" aria-hidden="true" tabindex="-1"></a>  <span class="co"># convert more than high school to factor</span></span>
+<span id="cb10-112"><a href="#cb10-112" aria-hidden="true" tabindex="-1"></a>  X4 <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
+<span id="cb10-113"><a href="#cb10-113" aria-hidden="true" tabindex="-1"></a>    X4,</span>
+<span id="cb10-114"><a href="#cb10-114" aria-hidden="true" tabindex="-1"></a>    <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb10-115"><a href="#cb10-115" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">c</span>(</span>
+<span id="cb10-116"><a href="#cb10-116" aria-hidden="true" tabindex="-1"></a>      <span class="st">"No Graduate Education"</span>,</span>
+<span id="cb10-117"><a href="#cb10-117" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Graduate Education"</span></span>
+<span id="cb10-118"><a href="#cb10-118" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-119"><a href="#cb10-119" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-120"><a href="#cb10-120" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-121"><a href="#cb10-121" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return education indicator</span></span>
+<span id="cb10-122"><a href="#cb10-122" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(X4)</span>
+<span id="cb10-123"><a href="#cb10-123" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-124"><a href="#cb10-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-125"><a href="#cb10-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-126"><a href="#cb10-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-127"><a href="#cb10-127" aria-hidden="true" tabindex="-1"></a><span class="co"># create function to simulate education variables</span></span>
+<span id="cb10-128"><a href="#cb10-128" aria-hidden="true" tabindex="-1"></a>simulate_education <span class="ot">&lt;-</span> <span class="cf">function</span>(N) {</span>
+<span id="cb10-129"><a href="#cb10-129" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-130"><a href="#cb10-130" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate years of education</span></span>
+<span id="cb10-131"><a href="#cb10-131" aria-hidden="true" tabindex="-1"></a>  X3 <span class="ot">&lt;-</span> <span class="fu">simulate_years_education</span>(N)</span>
+<span id="cb10-132"><a href="#cb10-132" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-133"><a href="#cb10-133" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create indicator for more than high school</span></span>
+<span id="cb10-134"><a href="#cb10-134" aria-hidden="true" tabindex="-1"></a>  X4 <span class="ot">&lt;-</span> <span class="fu">create_education_indicator</span>(X3)</span>
+<span id="cb10-135"><a href="#cb10-135" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-136"><a href="#cb10-136" aria-hidden="true" tabindex="-1"></a>  <span class="co"># combine education variables</span></span>
+<span id="cb10-137"><a href="#cb10-137" aria-hidden="true" tabindex="-1"></a>  education <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb10-138"><a href="#cb10-138" aria-hidden="true" tabindex="-1"></a>    <span class="at">X3 =</span> X3,</span>
+<span id="cb10-139"><a href="#cb10-139" aria-hidden="true" tabindex="-1"></a>    <span class="at">X4 =</span> X4</span>
+<span id="cb10-140"><a href="#cb10-140" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-141"><a href="#cb10-141" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-142"><a href="#cb10-142" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return simulated education variables</span></span>
+<span id="cb10-143"><a href="#cb10-143" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(education)</span>
+<span id="cb10-144"><a href="#cb10-144" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-145"><a href="#cb10-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-146"><a href="#cb10-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-147"><a href="#cb10-147" aria-hidden="true" tabindex="-1"></a><span class="do">### create function to simulate age</span></span>
+<span id="cb10-148"><a href="#cb10-148" aria-hidden="true" tabindex="-1"></a>simulate_age <span class="ot">&lt;-</span> <span class="cf">function</span>(N) {</span>
+<span id="cb10-149"><a href="#cb10-149" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-150"><a href="#cb10-150" aria-hidden="true" tabindex="-1"></a>  <span class="co"># initialize age vector</span></span>
+<span id="cb10-151"><a href="#cb10-151" aria-hidden="true" tabindex="-1"></a>  X5 <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, N)</span>
+<span id="cb10-152"><a href="#cb10-152" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-153"><a href="#cb10-153" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate age one observation at a time</span></span>
+<span id="cb10-154"><a href="#cb10-154" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N) {</span>
+<span id="cb10-155"><a href="#cb10-155" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-156"><a href="#cb10-156" aria-hidden="true" tabindex="-1"></a>    <span class="co"># randomly determine age distribution</span></span>
+<span id="cb10-157"><a href="#cb10-157" aria-hidden="true" tabindex="-1"></a>    age_distribution <span class="ot">&lt;-</span> <span class="fu">sample</span>(</span>
+<span id="cb10-158"><a href="#cb10-158" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>),</span>
+<span id="cb10-159"><a href="#cb10-159" aria-hidden="true" tabindex="-1"></a>      <span class="at">size =</span> <span class="dv">1</span>,</span>
+<span id="cb10-160"><a href="#cb10-160" aria-hidden="true" tabindex="-1"></a>      <span class="at">replace =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb10-161"><a href="#cb10-161" aria-hidden="true" tabindex="-1"></a>      <span class="at">prob =</span> <span class="fu">c</span>(<span class="fl">0.75</span>, <span class="fl">0.25</span>)</span>
+<span id="cb10-162"><a href="#cb10-162" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-163"><a href="#cb10-163" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-164"><a href="#cb10-164" aria-hidden="true" tabindex="-1"></a>    <span class="co"># simulate younger age distribution</span></span>
+<span id="cb10-165"><a href="#cb10-165" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (age_distribution <span class="sc">==</span> <span class="dv">1</span>) {</span>
+<span id="cb10-166"><a href="#cb10-166" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb10-167"><a href="#cb10-167" aria-hidden="true" tabindex="-1"></a>      X5[i] <span class="ot">&lt;-</span> <span class="fu">runif</span>(</span>
+<span id="cb10-168"><a href="#cb10-168" aria-hidden="true" tabindex="-1"></a>        <span class="at">n =</span> <span class="dv">1</span>,</span>
+<span id="cb10-169"><a href="#cb10-169" aria-hidden="true" tabindex="-1"></a>        <span class="at">min =</span> <span class="dv">18</span>,</span>
+<span id="cb10-170"><a href="#cb10-170" aria-hidden="true" tabindex="-1"></a>        <span class="at">max =</span> <span class="dv">70</span></span>
+<span id="cb10-171"><a href="#cb10-171" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb10-172"><a href="#cb10-172" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb10-173"><a href="#cb10-173" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb10-174"><a href="#cb10-174" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-175"><a href="#cb10-175" aria-hidden="true" tabindex="-1"></a>    <span class="co"># simulate older age distribution</span></span>
+<span id="cb10-176"><a href="#cb10-176" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (age_distribution <span class="sc">==</span> <span class="dv">2</span>) {</span>
+<span id="cb10-177"><a href="#cb10-177" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb10-178"><a href="#cb10-178" aria-hidden="true" tabindex="-1"></a>      age_value <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(</span>
+<span id="cb10-179"><a href="#cb10-179" aria-hidden="true" tabindex="-1"></a>        <span class="at">n =</span> <span class="dv">1</span>,</span>
+<span id="cb10-180"><a href="#cb10-180" aria-hidden="true" tabindex="-1"></a>        <span class="at">mean =</span> <span class="dv">70</span>,</span>
+<span id="cb10-181"><a href="#cb10-181" aria-hidden="true" tabindex="-1"></a>        <span class="at">sd =</span> <span class="dv">10</span></span>
+<span id="cb10-182"><a href="#cb10-182" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb10-183"><a href="#cb10-183" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb10-184"><a href="#cb10-184" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (age_value <span class="sc">&lt;</span> <span class="dv">70</span>) {</span>
+<span id="cb10-185"><a href="#cb10-185" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb10-186"><a href="#cb10-186" aria-hidden="true" tabindex="-1"></a>        age_value <span class="ot">&lt;-</span> </span>
+<span id="cb10-187"><a href="#cb10-187" aria-hidden="true" tabindex="-1"></a>          age_value <span class="sc">+</span> </span>
+<span id="cb10-188"><a href="#cb10-188" aria-hidden="true" tabindex="-1"></a>          (<span class="dv">2</span><span class="sc">*</span>(<span class="dv">70</span> <span class="sc">-</span> age_value))</span>
+<span id="cb10-189"><a href="#cb10-189" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb10-190"><a href="#cb10-190" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb10-191"><a href="#cb10-191" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb10-192"><a href="#cb10-192" aria-hidden="true" tabindex="-1"></a>      X5[i] <span class="ot">&lt;-</span> age_value</span>
+<span id="cb10-193"><a href="#cb10-193" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb10-194"><a href="#cb10-194" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb10-195"><a href="#cb10-195" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-196"><a href="#cb10-196" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb10-197"><a href="#cb10-197" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-198"><a href="#cb10-198" aria-hidden="true" tabindex="-1"></a>  <span class="co"># round age to nearest year</span></span>
+<span id="cb10-199"><a href="#cb10-199" aria-hidden="true" tabindex="-1"></a>  X5 <span class="ot">&lt;-</span> <span class="fu">round</span>(X5)</span>
+<span id="cb10-200"><a href="#cb10-200" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-201"><a href="#cb10-201" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return simulated age</span></span>
+<span id="cb10-202"><a href="#cb10-202" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(X5)</span>
+<span id="cb10-203"><a href="#cb10-203" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-204"><a href="#cb10-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-205"><a href="#cb10-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-206"><a href="#cb10-206" aria-hidden="true" tabindex="-1"></a><span class="do">### create function to simulate outcome variable</span></span>
+<span id="cb10-207"><a href="#cb10-207" aria-hidden="true" tabindex="-1"></a>simulate_outcome <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
+<span id="cb10-208"><a href="#cb10-208" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-209"><a href="#cb10-209" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate outcome variable</span></span>
+<span id="cb10-210"><a href="#cb10-210" aria-hidden="true" tabindex="-1"></a>  Y <span class="ot">&lt;-</span> <span class="fu">round</span>(</span>
+<span id="cb10-211"><a href="#cb10-211" aria-hidden="true" tabindex="-1"></a>    <span class="dv">35</span> <span class="sc">+</span> </span>
+<span id="cb10-212"><a href="#cb10-212" aria-hidden="true" tabindex="-1"></a>    <span class="dv">5</span><span class="sc">*</span>df<span class="sc">$</span>X1 <span class="sc">+</span></span>
+<span id="cb10-213"><a href="#cb10-213" aria-hidden="true" tabindex="-1"></a>    <span class="dv">3</span><span class="sc">*</span>(df<span class="sc">$</span>X2 <span class="sc">==</span> <span class="st">"Protestant"</span>) <span class="sc">+</span> </span>
+<span id="cb10-214"><a href="#cb10-214" aria-hidden="true" tabindex="-1"></a>    <span class="dv">5</span><span class="sc">*</span>(df<span class="sc">$</span>X2 <span class="sc">==</span> <span class="st">"Catholic"</span>) <span class="sc">+</span> </span>
+<span id="cb10-215"><a href="#cb10-215" aria-hidden="true" tabindex="-1"></a>    <span class="dv">6</span><span class="sc">*</span>(df<span class="sc">$</span>X2 <span class="sc">==</span> <span class="st">"Jewish"</span>) <span class="sc">+</span> </span>
+<span id="cb10-216"><a href="#cb10-216" aria-hidden="true" tabindex="-1"></a>    (<span class="sc">-</span><span class="dv">5</span>)<span class="sc">*</span>(df<span class="sc">$</span>X2 <span class="sc">==</span> <span class="st">"Muslim"</span>) <span class="sc">+</span></span>
+<span id="cb10-217"><a href="#cb10-217" aria-hidden="true" tabindex="-1"></a>    <span class="fl">0.75</span><span class="sc">*</span>(df<span class="sc">$</span>X3 <span class="sc">-</span> <span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb10-218"><a href="#cb10-218" aria-hidden="true" tabindex="-1"></a>    <span class="fl">0.25</span><span class="sc">*</span>df<span class="sc">$</span>X5 <span class="sc">+</span> </span>
+<span id="cb10-219"><a href="#cb10-219" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rnorm</span>(</span>
+<span id="cb10-220"><a href="#cb10-220" aria-hidden="true" tabindex="-1"></a>      <span class="at">n =</span> <span class="fu">nrow</span>(df),</span>
+<span id="cb10-221"><a href="#cb10-221" aria-hidden="true" tabindex="-1"></a>      <span class="at">mean =</span> <span class="dv">0</span>,</span>
+<span id="cb10-222"><a href="#cb10-222" aria-hidden="true" tabindex="-1"></a>      <span class="at">sd =</span> <span class="fl">12.5</span></span>
+<span id="cb10-223"><a href="#cb10-223" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-224"><a href="#cb10-224" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-225"><a href="#cb10-225" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-226"><a href="#cb10-226" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return simulated outcome</span></span>
+<span id="cb10-227"><a href="#cb10-227" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(Y)</span>
+<span id="cb10-228"><a href="#cb10-228" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-229"><a href="#cb10-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-230"><a href="#cb10-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-231"><a href="#cb10-231" aria-hidden="true" tabindex="-1"></a><span class="co"># create function to simulate full dataset</span></span>
+<span id="cb10-232"><a href="#cb10-232" aria-hidden="true" tabindex="-1"></a>simulate_data <span class="ot">&lt;-</span> <span class="cf">function</span>(N) {</span>
+<span id="cb10-233"><a href="#cb10-233" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-234"><a href="#cb10-234" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate demographic variables</span></span>
+<span id="cb10-235"><a href="#cb10-235" aria-hidden="true" tabindex="-1"></a>  demographics <span class="ot">&lt;-</span> <span class="fu">simulate_demographics</span>(N)</span>
+<span id="cb10-236"><a href="#cb10-236" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-237"><a href="#cb10-237" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate education variables</span></span>
+<span id="cb10-238"><a href="#cb10-238" aria-hidden="true" tabindex="-1"></a>  education <span class="ot">&lt;-</span> <span class="fu">simulate_education</span>(N)</span>
+<span id="cb10-239"><a href="#cb10-239" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-240"><a href="#cb10-240" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate age</span></span>
+<span id="cb10-241"><a href="#cb10-241" aria-hidden="true" tabindex="-1"></a>  age <span class="ot">&lt;-</span> <span class="fu">simulate_age</span>(N)</span>
+<span id="cb10-242"><a href="#cb10-242" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-243"><a href="#cb10-243" aria-hidden="true" tabindex="-1"></a>  <span class="co"># combine simulated variables</span></span>
+<span id="cb10-244"><a href="#cb10-244" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb10-245"><a href="#cb10-245" aria-hidden="true" tabindex="-1"></a>    <span class="at">X1 =</span> demographics<span class="sc">$</span>X1,</span>
+<span id="cb10-246"><a href="#cb10-246" aria-hidden="true" tabindex="-1"></a>    <span class="at">X2 =</span> demographics<span class="sc">$</span>X2,</span>
+<span id="cb10-247"><a href="#cb10-247" aria-hidden="true" tabindex="-1"></a>    <span class="at">X3 =</span> education<span class="sc">$</span>X3,</span>
+<span id="cb10-248"><a href="#cb10-248" aria-hidden="true" tabindex="-1"></a>    <span class="at">X4 =</span> education<span class="sc">$</span>X4,</span>
+<span id="cb10-249"><a href="#cb10-249" aria-hidden="true" tabindex="-1"></a>    <span class="at">X5 =</span> age</span>
+<span id="cb10-250"><a href="#cb10-250" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-251"><a href="#cb10-251" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-252"><a href="#cb10-252" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate outcome variable</span></span>
+<span id="cb10-253"><a href="#cb10-253" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>Y <span class="ot">&lt;-</span> <span class="fu">simulate_outcome</span>(df)</span>
+<span id="cb10-254"><a href="#cb10-254" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-255"><a href="#cb10-255" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return simulated data</span></span>
+<span id="cb10-256"><a href="#cb10-256" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(df)</span>
+<span id="cb10-257"><a href="#cb10-257" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Run the function to simulate 3000 observations. When you encounter an error, use the traceback() function to inspect the function calls and find what led to the error. Once you’ve discovered the error, fix it in the function, and, using words, briefly explain the error below the code chunk.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set sample size</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">3000</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate data</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">simulate_data</span>(N)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># examine the sequence of function calls that produced the previous error</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="fu">traceback</span>()</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; No traceback available</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate data again after fixing error</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">simulate_data</span>(N)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><em>In the simulate_religion function, ``rel_probabilities” was incorrectly called as “rel_probablility.</em></p>
+<p>Now that you’ve corrected that error, you are ready to fit an OLS model for your simulated data. Include X1, X2, X4, and X5 as predictors of Y.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit OLS regression model on simulated data</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>model1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  Y <span class="sc">~</span> X1 <span class="sc">+</span> X2 <span class="sc">+</span> X4 <span class="sc">+</span> X5,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Oh no! You encountered another error. Turn on the debug() function and proceed with debugging the code. Fix the error and re-run the model. After you’ve re-run the model, 1) identify the error using words and 2) interpret the model coefficients.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># turn debugging on for simulation function</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">debug</span>(simulate_data)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># run simulation function again, use debug() to proceed through and correct the error</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">simulate_data</span>(N)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; debugging in: simulate_data(N)</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; debug: {</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;     demographics &lt;- simulate_demographics(N)</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;     education &lt;- simulate_education(N)</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;     age &lt;- simulate_age(N)</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;     df &lt;- data.frame(X1 = demographics$X1, X2 = demographics$X2, </span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;         X3 = education$X3, X4 = education$X4, X5 = age)</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;     df$Y &lt;- simulate_outcome(df)</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;     return(df)</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; }</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; debug: demographics &lt;- simulate_demographics(N)</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; debug: education &lt;- simulate_education(N)</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; debug: age &lt;- simulate_age(N)</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; debug: df &lt;- data.frame(X1 = demographics$X1, X2 = demographics$X2, </span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;     X3 = education$X3, X4 = education$X4, X5 = age)</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; debug: df$Y &lt;- simulate_outcome(df)</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; debug: return(df)</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; exiting from: simulate_data(N)</span></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a><span class="co"># after correcting the error, turn debugging off</span></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a><span class="fu">undebug</span>(simulate_data)</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate corrected data</span></span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">simulate_data</span>(N)</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a><span class="co"># fit regression model</span></span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>model1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>  Y <span class="sc">~</span> X1 <span class="sc">+</span> X2  <span class="sc">+</span> X4 <span class="sc">+</span> X5,</span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df</span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a><span class="co"># print model summary</span></span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model1)</span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Call:</span></span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; lm(formula = Y ~ X1 + X2 + X4 + X5, data = df)</span></span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
+<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Residuals:</span></span>
+<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;     Min      1Q  Median      3Q     Max </span></span>
+<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; -48.374  -8.462   0.048   8.408  45.020 </span></span>
+<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
+<span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Coefficients:</span></span>
+<span id="cb13-50"><a href="#cb13-50" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;                      Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
+<span id="cb13-51"><a href="#cb13-51" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; (Intercept)          38.37232    0.73409  52.272  &lt; 2e-16 ***</span></span>
+<span id="cb13-52"><a href="#cb13-52" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; X1                    5.00044    0.45631  10.958  &lt; 2e-16 ***</span></span>
+<span id="cb13-53"><a href="#cb13-53" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; X2Catholic            1.86283    0.61683   3.020 0.002549 ** </span></span>
+<span id="cb13-54"><a href="#cb13-54" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; X2Jewish              2.35580    0.66914   3.521 0.000437 ***</span></span>
+<span id="cb13-55"><a href="#cb13-55" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; X2Muslim             -8.52144    0.79730 -10.688  &lt; 2e-16 ***</span></span>
+<span id="cb13-56"><a href="#cb13-56" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; X2Other              -2.85355    0.79502  -3.589 0.000337 ***</span></span>
+<span id="cb13-57"><a href="#cb13-57" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; X4Graduate Education  2.60143    0.57063   4.559 5.35e-06 ***</span></span>
+<span id="cb13-58"><a href="#cb13-58" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; X5                    0.27407    0.01147  23.897  &lt; 2e-16 ***</span></span>
+<span id="cb13-59"><a href="#cb13-59" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; ---</span></span>
+<span id="cb13-60"><a href="#cb13-60" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span id="cb13-61"><a href="#cb13-61" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
+<span id="cb13-62"><a href="#cb13-62" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Residual standard error: 12.49 on 2992 degrees of freedom</span></span>
+<span id="cb13-63"><a href="#cb13-63" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Multiple R-squared:  0.2341,   Adjusted R-squared:  0.2323 </span></span>
+<span id="cb13-64"><a href="#cb13-64" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; F-statistic: 130.6 on 7 and 2992 DF,  p-value: &lt; 2.2e-16</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><em>The error in the code was that all observations of X4 were being converted to ``No Graduate Education.” This produces an error in Model 1 because there is only one level of X4. Holding the other predictors constant, for X1 (gender), women have an outcome about 4.9 points higher than men, while respondents with graduate education (X4) have an outcome about 3.8 points higher than those without graduate education. Relative to Protestants, Catholics and Jewish respondents have higher outcomes, while Muslim and Other respondents have lower ratings; each additional year of age (X5) is associated with about a 0.25-point increase in the outcome.</em></p>
+</section>
+<section id="profiling-code-exercise" class="level2">
+<h2 class="anchored" data-anchor-id="profiling-code-exercise">Profiling Code Exercise</h2>
+<p>Returning to the code you previously debugged, while we now have working code, we don’t necessarily have efficient code. As your research pipelines become larger and more complex, inefficient code can increase the amount of time it takes to complete your analysis, especially if you are working with very large datasets.</p>
+<p><a href="https://bookdown.org/rdpeng/rprogdatascience/profiling-r-code.html">Profiling</a> is the process of determining where code is spending its time while running. Rather than just guess which parts of code are inefficient, profiling lets us identify which functions or operations accound for the largest portions of the total runtime. Using these diagnostics, we can then focus on optimizing the parts of our code where improving efficiency will matter most.</p>
+<p>Before profiling individual pieces of code, we can first use system.time() to see how long the entire data simulation takes.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set sample size for profiling</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">1000000</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># measure how long it takes to simulate data</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>({</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">simulate_data</span>(N)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;    user  system elapsed </span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;   4.566   0.057   4.667</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>While system.time() tells us how long it takes to complete this simulation generally, it does not tell us which parts of the simulation function take up the most time. To examine our code at a more granular level, we csn use Rprof(). Rprof() records which functions are being executed and where the code is spending the most time running. Rprof() doesn’t replace or change any of the code that’s running, it’s just observing and tracking what R is doing while your code is running. We can then use the summaryRprof() to inspect the results and identify where out code is spending the most time.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># start profiling revised code</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">Rprof</span>(<span class="st">"simulation_profile.out"</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate data</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">simulate_data</span>(N)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># stop profiling code</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="fu">Rprof</span>(<span class="cn">NULL</span>)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co"># summarize profiling results</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>profiling_results <span class="ot">&lt;-</span> <span class="fu">summaryRprof</span>(</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">"simulation_profile.out"</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="co"># examine profiling results</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>profiling_results<span class="sc">$</span>by.total</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;                              total.time total.pct self.time self.pct</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; ".main"                            4.20    100.00      0.00     0.00</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "block_exec"                       4.20    100.00      0.00     0.00</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "call_block"                       4.20    100.00      0.00     0.00</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "doWithOneRestart"                 4.20    100.00      0.00     0.00</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "eng_r"                            4.20    100.00      0.00     0.00</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "eval"                             4.20    100.00      0.00     0.00</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "evaluate::evaluate"               4.20    100.00      0.00     0.00</span></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "evaluate"                         4.20    100.00      0.00     0.00</span></span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "execute"                          4.20    100.00      0.00     0.00</span></span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "in_dir"                           4.20    100.00      0.00     0.00</span></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "in_input_dir"                     4.20    100.00      0.00     0.00</span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "knitr::knit"                      4.20    100.00      0.00     0.00</span></span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "process_file"                     4.20    100.00      0.00     0.00</span></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "process_group"                    4.20    100.00      0.00     0.00</span></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "rmarkdown::render"                4.20    100.00      0.00     0.00</span></span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "simulate_data"                    4.20    100.00      0.00     0.00</span></span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "with_handlers"                    4.20    100.00      0.00     0.00</span></span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "withCallingHandlers"              4.20    100.00      0.00     0.00</span></span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "withOneRestart"                   4.20    100.00      0.00     0.00</span></span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "withRestartList"                  4.20    100.00      0.00     0.00</span></span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "withRestarts"                     4.20    100.00      0.00     0.00</span></span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "withVisible"                      4.20    100.00      0.00     0.00</span></span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "xfun:::handle_error"              4.20    100.00      0.00     0.00</span></span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "simulate_age"                     3.54     84.29      0.52    12.38</span></span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "sample"                           2.84     67.62      0.64    15.24</span></span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "sample.int"                       2.14     50.95      1.12    26.67</span></span>
+<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "stopifnot"                        0.88     20.95      0.66    15.71</span></span>
+<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "factor"                           0.44     10.48      0.44    10.48</span></span>
+<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "simulate_demographics"            0.32      7.62      0.00     0.00</span></span>
+<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "simulate_education"               0.28      6.67      0.00     0.00</span></span>
+<span id="cb15-48"><a href="#cb15-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "simulate_religion"                0.26      6.19      0.00     0.00</span></span>
+<span id="cb15-49"><a href="#cb15-49" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "create_education_indicator"       0.22      5.24      0.00     0.00</span></span>
+<span id="cb15-50"><a href="#cb15-50" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "rnorm"                            0.20      4.76      0.20     4.76</span></span>
+<span id="cb15-51"><a href="#cb15-51" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "c"                                0.18      4.29      0.18     4.29</span></span>
+<span id="cb15-52"><a href="#cb15-52" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "runif"                            0.16      3.81      0.16     3.81</span></span>
+<span id="cb15-53"><a href="#cb15-53" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "...elt"                           0.14      3.33      0.10     2.38</span></span>
+<span id="cb15-54"><a href="#cb15-54" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "simulate_gender"                  0.06      1.43      0.00     0.00</span></span>
+<span id="cb15-55"><a href="#cb15-55" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "simulate_outcome"                 0.06      1.43      0.00     0.00</span></span>
+<span id="cb15-56"><a href="#cb15-56" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "simulate_years_education"         0.06      1.43      0.00     0.00</span></span>
+<span id="cb15-57"><a href="#cb15-57" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "...length"                        0.04      0.95      0.04     0.95</span></span>
+<span id="cb15-58"><a href="#cb15-58" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "length"                           0.04      0.95      0.04     0.95</span></span>
+<span id="cb15-59"><a href="#cb15-59" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "*"                                0.02      0.48      0.02     0.48</span></span>
+<span id="cb15-60"><a href="#cb15-60" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "&gt;"                                0.02      0.48      0.02     0.48</span></span>
+<span id="cb15-61"><a href="#cb15-61" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "all"                              0.02      0.48      0.02     0.48</span></span>
+<span id="cb15-62"><a href="#cb15-62" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "anyNA"                            0.02      0.48      0.02     0.48</span></span>
+<span id="cb15-63"><a href="#cb15-63" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "ifelse"                           0.02      0.48      0.02     0.48</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Inspect the profiling results, then answer a few questions about the code. First, which functions accounts for the largest portion of runtime?</p>
+<p><em>The function simulate_age accounts for the largest portion of runtime (85%). Note: there are additional functions that are evaluated when knitting versus running code in R.</em></p>
+<p>Scroll up and examine the code within this function. What about the way the function is currently written might make it inefficient? Using words, how might you suggest re-writing the function to make it more efficient?</p>
+<p><em>The simulate_age function is inefficient because it loops through each individual row in the dataframe and repeatedly calls sample(), runif(), and rnorm() for each individual observation. A more efficient approach would be to vectorize the simulation by generating the age distributions for many observations at once then combining them.</em></p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
