@@ -120,7 +120,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="introduction-to-lab" class="level2">
 <h2 class="anchored" data-anchor-id="introduction-to-lab">Introduction to Lab</h2>
-<p>Welcome to POLI 787 Lab! The lab portion of 787 is designed to expose you to and give you hands-on experience with a range of tools and methods that will be useful as you begin conducting more of your own research from start to finish. The topics we’ll cover this semester will be somewhat of a mixed bag. Rather than going super in-depth on any particular topic, our goal is to introduce you to a varaity of techniques that you are likely to encounter in your own research. Hopefully having a bit of familiarity with a variety of techniques through 787 will allow you to become a more effective and independent research, and will help prepare you to learn about and try new methods beyond the scope of this class.</p>
+<p>Welcome to POLI 787 Lab! The lab portion of 787 is designed to expose you to and give you hands-on experience with a range of tools and methods that will be useful as you begin conducting more of your own research from start to finish. The topics we’ll cover this semester will be somewhat of a mixed bag. Rather than going super in-depth on one particular topic, our goal is to introduce you to a variety of techniques that you are likely to encounter in your own research. Hopefully, having a bit of familiarity with several different methods through 787 will allow you to become a more effective independent researcher (and coauthor!) and will help prepare you to learn about and try new methods beyond the scope of this class.</p>
 <p>While some labs will introduce new tools/packages through short demonstrations, most will revolve around brief, structured exercises for you to complete. The goal is to give you practice learning about and implementing these methods by yourself in a controlled situation before you encounter them in more involved problem sets or begin applying them in your own research. Today’s lab is a bit different because it’s focused more on project pipelines and general principles rather than particular methods or tools.</p>
 <p>A note about labs: attendance in lab is mandatory as is completing the weekly lab assignments!</p>
 <!-- LABS ARE MANDATORY -- SYLLABUS SAYS THEY ARE DUE AT 5PM ON FRIDAY (ask santiago about this) -->
@@ -678,7 +678,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">simulate_data</span>(N)</span>
 <span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>})</span>
 <span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;    user  system elapsed </span></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;   4.566   0.057   4.667</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;   4.348   0.027   4.377</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>While system.time() tells us how long it takes to complete this simulation generally, it does not tell us which parts of the simulation function take up the most time. To examine our code at a more granular level, we csn use Rprof(). Rprof() records which functions are being executed and where the code is spending the most time running. Rprof() doesn’t replace or change any of the code that’s running, it’s just observing and tracking what R is doing while your code is running. We can then use the summaryRprof() to inspect the results and identify where out code is spending the most time.</p>
 <div class="cell">
@@ -699,52 +699,54 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="co"># examine profiling results</span></span>
 <span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>profiling_results<span class="sc">$</span>by.total</span>
 <span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;                              total.time total.pct self.time self.pct</span></span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; ".main"                            4.20    100.00      0.00     0.00</span></span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "block_exec"                       4.20    100.00      0.00     0.00</span></span>
-<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "call_block"                       4.20    100.00      0.00     0.00</span></span>
-<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "doWithOneRestart"                 4.20    100.00      0.00     0.00</span></span>
-<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "eng_r"                            4.20    100.00      0.00     0.00</span></span>
-<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "eval"                             4.20    100.00      0.00     0.00</span></span>
-<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "evaluate::evaluate"               4.20    100.00      0.00     0.00</span></span>
-<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "evaluate"                         4.20    100.00      0.00     0.00</span></span>
-<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "execute"                          4.20    100.00      0.00     0.00</span></span>
-<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "in_dir"                           4.20    100.00      0.00     0.00</span></span>
-<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "in_input_dir"                     4.20    100.00      0.00     0.00</span></span>
-<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "knitr::knit"                      4.20    100.00      0.00     0.00</span></span>
-<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "process_file"                     4.20    100.00      0.00     0.00</span></span>
-<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "process_group"                    4.20    100.00      0.00     0.00</span></span>
-<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "rmarkdown::render"                4.20    100.00      0.00     0.00</span></span>
-<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "simulate_data"                    4.20    100.00      0.00     0.00</span></span>
-<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "with_handlers"                    4.20    100.00      0.00     0.00</span></span>
-<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "withCallingHandlers"              4.20    100.00      0.00     0.00</span></span>
-<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "withOneRestart"                   4.20    100.00      0.00     0.00</span></span>
-<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "withRestartList"                  4.20    100.00      0.00     0.00</span></span>
-<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "withRestarts"                     4.20    100.00      0.00     0.00</span></span>
-<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "withVisible"                      4.20    100.00      0.00     0.00</span></span>
-<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "xfun:::handle_error"              4.20    100.00      0.00     0.00</span></span>
-<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "simulate_age"                     3.54     84.29      0.52    12.38</span></span>
-<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "sample"                           2.84     67.62      0.64    15.24</span></span>
-<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "sample.int"                       2.14     50.95      1.12    26.67</span></span>
-<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "stopifnot"                        0.88     20.95      0.66    15.71</span></span>
-<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "factor"                           0.44     10.48      0.44    10.48</span></span>
-<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "simulate_demographics"            0.32      7.62      0.00     0.00</span></span>
-<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "simulate_education"               0.28      6.67      0.00     0.00</span></span>
-<span id="cb15-48"><a href="#cb15-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "simulate_religion"                0.26      6.19      0.00     0.00</span></span>
-<span id="cb15-49"><a href="#cb15-49" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "create_education_indicator"       0.22      5.24      0.00     0.00</span></span>
-<span id="cb15-50"><a href="#cb15-50" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "rnorm"                            0.20      4.76      0.20     4.76</span></span>
-<span id="cb15-51"><a href="#cb15-51" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "c"                                0.18      4.29      0.18     4.29</span></span>
-<span id="cb15-52"><a href="#cb15-52" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "runif"                            0.16      3.81      0.16     3.81</span></span>
-<span id="cb15-53"><a href="#cb15-53" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "...elt"                           0.14      3.33      0.10     2.38</span></span>
-<span id="cb15-54"><a href="#cb15-54" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "simulate_gender"                  0.06      1.43      0.00     0.00</span></span>
-<span id="cb15-55"><a href="#cb15-55" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "simulate_outcome"                 0.06      1.43      0.00     0.00</span></span>
-<span id="cb15-56"><a href="#cb15-56" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "simulate_years_education"         0.06      1.43      0.00     0.00</span></span>
-<span id="cb15-57"><a href="#cb15-57" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "...length"                        0.04      0.95      0.04     0.95</span></span>
-<span id="cb15-58"><a href="#cb15-58" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "length"                           0.04      0.95      0.04     0.95</span></span>
-<span id="cb15-59"><a href="#cb15-59" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "*"                                0.02      0.48      0.02     0.48</span></span>
-<span id="cb15-60"><a href="#cb15-60" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "&gt;"                                0.02      0.48      0.02     0.48</span></span>
-<span id="cb15-61"><a href="#cb15-61" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "all"                              0.02      0.48      0.02     0.48</span></span>
-<span id="cb15-62"><a href="#cb15-62" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "anyNA"                            0.02      0.48      0.02     0.48</span></span>
-<span id="cb15-63"><a href="#cb15-63" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "ifelse"                           0.02      0.48      0.02     0.48</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; ".main"                            4.16    100.00      0.00     0.00</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "block_exec"                       4.16    100.00      0.00     0.00</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "call_block"                       4.16    100.00      0.00     0.00</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "doWithOneRestart"                 4.16    100.00      0.00     0.00</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "eng_r"                            4.16    100.00      0.00     0.00</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "eval"                             4.16    100.00      0.00     0.00</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "evaluate::evaluate"               4.16    100.00      0.00     0.00</span></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "evaluate"                         4.16    100.00      0.00     0.00</span></span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "execute"                          4.16    100.00      0.00     0.00</span></span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "in_dir"                           4.16    100.00      0.00     0.00</span></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "in_input_dir"                     4.16    100.00      0.00     0.00</span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "knitr::knit"                      4.16    100.00      0.00     0.00</span></span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "process_file"                     4.16    100.00      0.00     0.00</span></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "process_group"                    4.16    100.00      0.00     0.00</span></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "rmarkdown::render"                4.16    100.00      0.00     0.00</span></span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "simulate_data"                    4.16    100.00      0.00     0.00</span></span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "with_handlers"                    4.16    100.00      0.00     0.00</span></span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "withCallingHandlers"              4.16    100.00      0.00     0.00</span></span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "withOneRestart"                   4.16    100.00      0.00     0.00</span></span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "withRestartList"                  4.16    100.00      0.00     0.00</span></span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "withRestarts"                     4.16    100.00      0.00     0.00</span></span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "withVisible"                      4.16    100.00      0.00     0.00</span></span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "xfun:::handle_error"              4.16    100.00      0.00     0.00</span></span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "simulate_age"                     3.50     84.13      0.56    13.46</span></span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "sample"                           2.80     67.31      0.60    14.42</span></span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "sample.int"                       2.12     50.96      1.12    26.92</span></span>
+<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "stopifnot"                        0.90     21.63      0.46    11.06</span></span>
+<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "factor"                           0.46     11.06      0.46    11.06</span></span>
+<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "simulate_demographics"            0.32      7.69      0.00     0.00</span></span>
+<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "simulate_education"               0.28      6.73      0.00     0.00</span></span>
+<span id="cb15-48"><a href="#cb15-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "simulate_religion"                0.26      6.25      0.00     0.00</span></span>
+<span id="cb15-49"><a href="#cb15-49" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "create_education_indicator"       0.24      5.77      0.00     0.00</span></span>
+<span id="cb15-50"><a href="#cb15-50" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "all"                              0.20      4.81      0.20     4.81</span></span>
+<span id="cb15-51"><a href="#cb15-51" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "runif"                            0.18      4.33      0.18     4.33</span></span>
+<span id="cb15-52"><a href="#cb15-52" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "...elt"                           0.18      4.33      0.14     3.37</span></span>
+<span id="cb15-53"><a href="#cb15-53" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "rnorm"                            0.12      2.88      0.12     2.88</span></span>
+<span id="cb15-54"><a href="#cb15-54" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "c"                                0.10      2.40      0.10     2.40</span></span>
+<span id="cb15-55"><a href="#cb15-55" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "length"                           0.10      2.40      0.10     2.40</span></span>
+<span id="cb15-56"><a href="#cb15-56" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "simulate_gender"                  0.06      1.44      0.00     0.00</span></span>
+<span id="cb15-57"><a href="#cb15-57" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "simulate_outcome"                 0.06      1.44      0.00     0.00</span></span>
+<span id="cb15-58"><a href="#cb15-58" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "...length"                        0.04      0.96      0.04     0.96</span></span>
+<span id="cb15-59"><a href="#cb15-59" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "simulate_years_education"         0.04      0.96      0.00     0.00</span></span>
+<span id="cb15-60"><a href="#cb15-60" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "("                                0.02      0.48      0.02     0.48</span></span>
+<span id="cb15-61"><a href="#cb15-61" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "anyNA"                            0.02      0.48      0.02     0.48</span></span>
+<span id="cb15-62"><a href="#cb15-62" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "Ops.factor"                       0.02      0.48      0.02     0.48</span></span>
+<span id="cb15-63"><a href="#cb15-63" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "which"                            0.02      0.48      0.02     0.48</span></span>
+<span id="cb15-64"><a href="#cb15-64" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "=="                               0.02      0.48      0.00     0.00</span></span>
+<span id="cb15-65"><a href="#cb15-65" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; "ifelse"                           0.02      0.48      0.00     0.00</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Inspect the profiling results, then answer a few questions about the code. First, which functions accounts for the largest portion of runtime?</p>
 <p><em>The function simulate_age accounts for the largest portion of runtime (85%). Note: there are additional functions that are evaluated when knitting versus running code in R.</em></p>
