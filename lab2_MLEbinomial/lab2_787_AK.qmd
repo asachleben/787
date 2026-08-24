@@ -1,0 +1,7 @@
+---
+title: "Maximum Likelihood and Binomial Models"
+format: html
+author: "Audrey Sachleben"
+date: today
+---
+
