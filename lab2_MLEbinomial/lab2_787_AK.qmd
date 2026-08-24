@@ -5,3 +5,236 @@ author: "Audrey Sachleben"
 date: today
 ---
 
+## Binomial Models
+
+This week in lab we are shifting towards modeling with binary outcomes, or outcomes that can take on only one of two mutually exclusive values. Binary outcomes are exremely common in political science, so knowing how to work effectively with them is critical. 
+
+From POLI 784 you already know how to estimate a linear regression using lm(). So, one reasonable starting point might be to wonder why we wouldn't also use OLS when our outcome variable is binary? As Santiago discussed in lecture, you actually can, however this creates some important problems. We'll use those problems to motivate two common binomial models, the logit and the probit, and learn how to estimate them using `glm()`. 
+
+Finally, we'll also look under the hood at how these models are estimated, and we'll use `optim()` to manually estimate the same logit model we fit using glm(). 
+
+## Script Set Up
+```{r set up}
+# clear environment
+rm(list = ls())
+
+# load packages
+library(haven)
+
+# load lab 2data
+colombia <- read_dta("lab2_MLEbinomial/lab2.dta")
+
+```
+
+## Starting with a Linear Probability Model
+
+Suppose we have a small survey in which interest measures someone's level of political interest (0 to 6) and turnout equals 1 if the respondent voted and 0 if the respondent did not vote. We could estimate the relationship between political interest and turnout using the `lm()` command you are familiar with. When OLS is used with a binary dependent variable, we generally call it a *linear probability model (LPM)*.
+
+*Note*: The data below are fake and are intentionally constructed to make a point, so don't read anything substantive into them!
+
+```{r}
+# create fake turnout data
+turnout_data <- data.frame(
+  interest = rep(0:6, each = 10),
+  turnout = c(
+    rep(0, 10),
+    rep(0, 10),
+    c(rep(0, 9), 1),
+    c(rep(0, 5), rep(1, 5)),
+    c(0, rep(1, 9)),
+    rep(1, 10),
+    rep(1, 10)
+  )
+)
+
+# examine turnout across levels of political interest
+table(turnout_data$interest, turnout_data$turnout)
+
+# estimate linear probability model
+lpm <- lm(
+  turnout ~ interest,
+  data = turnout_data
+)
+
+summary(lpm)
+
+```
+
+As you can see, one appealing feature of the LPM is that its coefficients are incredibly straightforward to interpret. Because `turnout` is coded 0/1, the coefficient on `interest` gives us the estimated change in the probability of turnout associated with a one-unit increase in political interest.
+
+**Question:** According to the model, how does a one-unit increase in political interest change the predicted probability of voting?
+
+*Response:*
+
+While this may seem quite convenient at first glance, Santiago discussed how one problem associated with a linear probability model is that it can produce predicted probabilities that are negative or exceed 1. Let's take a look:
+
+```{r}
+# generate predicted values from linear probability model
+turnout_data$lpm_prediction <- predict(lpm)
+
+# inspect range of predicted values
+summary(turnout_data$lpm_prediction)
+
+```
+
+This problem is particularly pronounced at the extremes of our data (those with an interest of 0 or 6). As you can see, OLS does not know that our dependent variable represents a binary outcome. It simply fits the best linear relationship through the data, and nothing prevents that line from extending below 0 or above 1. This is one reason we often turn to models specifically designed for binary outcome variables. 
+
+## Generalized Linear Models
+
+One way to estimate models for binary outcomes in `R` is with the `glm()` command. The basic syntax for a glm() should look pretty familiar. 
+```{r glm syntax, eval = FALSE}
+glm(
+  outcome ~ predictor,
+  data = data,
+  family = ...(link = "...")
+)
+```
+
+The important new piece is the *family* argument. The family tells `R` about the distribution of out outcome variable, and the *link function* we want to use. For a binary dependent variable, we use the binomial family. Two of the most common link functions are *logit* and *probit*. Let's estimate a logit model using our fake turnout data. 
+
+```{r turnout logit}
+# estimate logit model on turnout data
+turnout_logit <- glm(
+  turnout ~ interest,
+  data = turnout_data,
+  family = binomial(link = "logit")
+)
+
+summary(turnout_logit)
+```
+
+Now generate predicted probabilities from the logit model. We can then compare those the the predictions gathered from the linear probability model we previously estimated. The argument `type = "response"` tells `predict()` that we want predictions on the scale of our dependent variable—in this case, probabilities. As you'll see, the logit model (and probit) produce predicted probabilities that fall between 0 and 1. 
+
+```{r}
+# generate predicted probabilities for logit model
+turnout_data$logit_prediction <- predict(
+  turnout_logit,
+  type = "response"
+)
+
+# compare range of predictions between lpm and logit models
+summary(turnout_data$lpm_prediction)
+summary(turnout_data$logit_prediction)
+```
+
+## Binomial Models: Paramilitary Presence in Colombia
+Now, let's work through a real example. For the rest of today's lab, we'll use data from a previous project examining paramilitary groups in Colombia (Chelsea Estancona '18). Our dependent variable is `AUC`, which measures the presence of the *Autodefensas Unidas de Colombia (AUC)*, or United Self-Defenses of Colombia, in a municipality.
+
+Our predictors are:
+
+- `tribut_2_log`: logged tax income
+- `tribut_2_log_sq`: logged tax income squared
+- `pop_attacks`: attacks on the population
+- `disbogota`: distance from Bogotá
+- `drugs`: presence of drug crops
+- `pop_log`: logged population 
+
+First, inspect the data to make sure the outcome variable(`AUC`) is actually binary. Then, estimate a logit model and a probit model, respectively. Inspect the coefficient estimates from the logit and the probit side by side. 
+
+```{r colombia glm}
+# inspect dependent variable
+table(colombia$AUC)
+
+# estimate logit model
+model_logit <- glm(
+  AUC ~ tribut_2_log + tribut_2_log_sq + pop_attacks +
+    disbogota + drugs + pop_log,
+  data = colombia,
+  family = binomial(link = "logit")
+)
+
+# examine model results
+summary(model_logit)
+
+# estimate probit model
+model_probit <- glm(
+  AUC ~ tribut_2_log + tribut_2_log_sq + pop_attacks +
+    disbogota + drugs + pop_log,
+  data = colombia,
+  family = binomial(link = "probit")
+)
+
+# examine model results
+summary(model_probit)
+
+# compare logit and probit coefficient estimates
+cbind(
+  Logit = coef(model_logit),
+  Probit = coef(model_probit)
+)
+
+```
+
+The coefficients from the logit and probit models are clearly not numerically identical. That is okay! Logit and probit use different link functions, so the coefficient estimates operate on different scales. The direction of the estimates and the general substantive patterns of the relationships between predictors and the outcome should remain relatively similar, even though the estimates are different. 
+
+**Question:** Compare the logit and probit models. Do any predictors change direction across the two models? Would you reach dramatically different substantive conclusions from them?
+
+*Response:*
+
+## Interpreting Logit & Probit Models
+
+Logit and probit models give us predicted probabilities that stay between 0 and 1. However, the cofficients are no longer as straightforward to interpret as the coefficients from out linear probability model. For a logit model, the coefficients represent changes in the *log-odds* of the outcome: 
+
+$$
+\log\left(\frac{p_i}{1-p_i}\right)=X_i\beta.
+$$
+
+Log-odds aren't exactly the most intuitive quantity to communicate, so one thing we can do is exponentiate the coefficients to convert them into *odds ratios*. Odds ratios have a useful reference point:
+
+- An odds ratio of 1 indicates no change in the odds.
+- An odds ratio greater than 1 indicates increasing odds.
+- An odds ratio less than 1 indicates decreasing odds.
+
+Let's focus on `pop_attacks`. Inspect and interpret the estimate on `pop_attacks`. 
+
+```{r}
+# inspect logit coefficient for attacks on population
+coef(model_logit)["pop_attacks"]
+
+# convert coefficient into odds ratio
+exp(coef(model_logit)["pop_attacks"])
+
+# calculate percentage change in odds
+100 * (
+  exp(coef(model_logit)["pop_attacks"]) - 1
+)
+```
+
+
+**Question:** Holding the other variables constant, how is an additional attack on the population associated with the odds of AUC presence?
+
+*Response:*
+
+It's important to remember that odds are **not** probabailities. Odds ratios can be useful, but we often ultimately want to say something about the predicted probability of observing our outcome. We'll spend time next week generating predicted probabilities using the *average case approach* and the *observed value approach*, but for now, we'll focus on using the `predict()` and `plogis()` functions. First, use `predict()` to generate the model's linear predictor. For the logit model, this is the predicted log-odds. To transform them into probabilities, we can use the `plogis()` function. 
+
+```{r}
+# generate predictions on log-odds scale
+logit_linear_prediction <- predict(
+  model_logit,
+  type = "link"
+)
+
+# inspect first few values
+head(logit_linear_prediction)
+
+# transform log-odds into probabilities
+logit_probability <- plogis(
+  logit_linear_prediction
+)
+
+# inspect first few probabilities
+head(logit_probability)
+
+# inspect range
+summary(logit_probability)
+
+```
+
+
+Notice that all of these values fall between 0 and 1. This is exactly what `R` was doing earlier when we specified *predict(model_logit, type = "response")*. So, `plogis()` is the *inverse-logit transformation*. It takes an unbounded linear prediction and maps it onto a valid probability between 0 and 1. The same basic process occurs with a *probit* model. The difference is that the probit uses the CDF of a standard normal distribution rather than the logistic distribution. To estimate predicted probabilities for a probit model, we therefore use `pnorm()` rather than `plogis()`.
+
+
+
+
+
+
