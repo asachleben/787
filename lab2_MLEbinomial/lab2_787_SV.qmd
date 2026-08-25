@@ -1,13 +1,13 @@
 ---
 title: "Maximum Likelihood and Binomial Models"
 format: html
-author: "Audrey Sachleben"
+author: "Audrey Sachleben" 
 date: today
 ---
 ```{r setup, include=FALSE}
 # set output options for rendered file
 knitr::opts_chunk$set(
-  eval = TRUE, # evaluate code in rendered output
+  eval = FALSE, # evaluate code in rendered output
   echo = TRUE, # show code in rendered output
   include = TRUE, # include output in rendered output
   message = FALSE, # hide messages in rendered output
@@ -66,13 +66,10 @@ turnout_data <- data.frame(
 )
 
 # examine turnout across levels of political interest
-table(turnout_data$interest, turnout_data$turnout)
+table(__________, ____________)
 
 # estimate linear probability model
-lpm <- lm(
-  turnout ~ interest,
-  data = turnout_data
-)
+lpm <- _____________
 
 summary(lpm)
 
@@ -88,10 +85,10 @@ While this may seem quite convenient at first glance, Santiago discussed how one
 
 ```{r lpm}
 # generate predicted values from linear probability model
-turnout_data$lpm_prediction <- predict(lpm)
+turnout_data$lpm_prediction <- predict(__________)
 
-# inspect range of predicted values
-summary(turnout_data$lpm_prediction)
+# inspect summary of predicted values
+________(_____________)
 
 ```
 
@@ -112,10 +109,10 @@ The important new piece is the *family* argument. The family tells `R` about the
 
 ```{r turnout logit}
 # estimate logit model on turnout data
-turnout_logit <- glm(
-  turnout ~ interest,
-  data = turnout_data,
-  family = binomial(link = "logit")
+turnout_logit <- ______(
+  ________ ~ ________,
+  data = ________,
+  ________ = ________(________ = "________")
 )
 
 summary(turnout_logit)
@@ -125,14 +122,14 @@ Now generate predicted probabilities from the logit model. We can then compare t
 
 ```{r pred logit}
 # generate predicted probabilities for logit model
-turnout_data$logit_prediction <- predict(
-  turnout_logit,
+turnout_data$logit_prediction <- ________(
+  ________,
   type = "response"
 )
 
-# compare range of predictions between lpm and logit models
-summary(turnout_data$lpm_prediction)
-summary(turnout_data$logit_prediction)
+# compare summary of predictions between lpm and logit models
+________(________$________)
+________(________$________)
 ```
 
 # Binomial Models Exercise: Paramilitary Presence in Colombia
@@ -154,23 +151,13 @@ First, inspect the data to make sure the outcome variable(`AUC`) is actually bin
 table(colombia$AUC)
 
 # estimate logit model
-model_logit <- glm(
-  AUC ~ tribut_2_log + tribut_2_log_sq + pop_attacks +
-    disbogota + drugs + pop_log,
-  data = colombia,
-  family = binomial(link = "logit")
-)
+model_logit <- _____________
 
 # examine model results
 summary(model_logit)
 
 # estimate probit model
-model_probit <- glm(
-  AUC ~ tribut_2_log + tribut_2_log_sq + pop_attacks +
-    disbogota + drugs + pop_log,
-  data = colombia,
-  family = binomial(link = "probit")
-)
+model_probit <- __________________
 
 # examine model results
 summary(model_probit)
@@ -210,7 +197,7 @@ Let's focus on `pop_attacks`. Inspect and interpret the estimate on `pop_attacks
 coef(model_logit)["pop_attacks"]
 
 # convert coefficient into odds ratio
-exp(coef(model_logit)["pop_attacks"])
+________(coef(model_logit)["pop_attacks"])
 
 # calculate percentage change in odds
 100 * (
@@ -227,7 +214,7 @@ It's important to remember that odds are **not** probabailities. Odds ratios can
 
 ```{r log odds}
 # generate predictions on log-odds scale
-logit_linear_prediction <- predict(
+logit_linear_prediction <- __________(
   model_logit,
   type = "link"
 )
@@ -236,8 +223,8 @@ logit_linear_prediction <- predict(
 head(logit_linear_prediction)
 
 # transform log-odds into probabilities
-logit_probability <- plogis(
-  logit_linear_prediction
+logit_probability <- __________(
+  ____________
 )
 
 # inspect first few probabilities
@@ -393,24 +380,24 @@ starting_values <- rep(
 
 # estimate logit model using optim()
 optim_logit <- optim(
-  par = starting_values,
-  fn = logit_nll,
+  par = ________,
+  fn = __________,
   y = y,
   X = X,
   method = "BFGS",
-  hessian = TRUE
+  __________ = ________
 )
 
 # inspect optimization results
 optim_logit
 
 # extract coefficient estimates
-optim_logit$par
+____________
 
 # compare glm and optim coefficient estimates
 cbind(
-  GLM = coef(model_logit),
-  OPTIM = optim_logit$par
+  GLM = __________,
+  OPTIM = __________
 )
 ```
 
