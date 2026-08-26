@@ -2,7 +2,7 @@
 title: "Maximum Likelihood and Binomial Models"
 format: html
 author: "Audrey Sachleben"
-date: "August 31, 2026"
+date: "August 28, 2026"
 ---
 ```{r setup, include=FALSE}
 # set output options for rendered file
