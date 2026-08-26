@@ -46,9 +46,9 @@ set.seed(9692)
 
 ## Starting with a Linear Probability Model
 
-Suppose we have a small survey in which `interest` measures someone's level of political interest (0 to 6) and `turnout` equals 1 if the respondent voted and 0 if the respondent did not vote. We could estimate the relationship between political interest and turnout using the `lm()` command you are familiar with. When OLS is used with a binary dependent variable, we generally call it a *linear probability model (LPM)*.
+Suppose we have a small survey in which `interest` measures someone's level of political interest (0 to 6) and `turnout` equals 1 if the respondent voted and 0 if the respondent did not vote. We could estimate the relationship between political interest and turnout using the `lm()` command you are familiar with. When OLS is used with a binary dependent variable, we generally call it a *linear probability model (LPM)*.   
 
-*Note*: The data below are fake and are intentionally constructed to make a point, so don't read anything substantive into them!
+*Note*: The data below are fake and are intentionally constructed to make a point, so don't read anything substantive into them! 
 
 ```{r sim data}
 # create fake turnout data
