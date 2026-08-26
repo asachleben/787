@@ -70,7 +70,8 @@ table(turnout_data$interest, turnout_data$turnout)
 
 # estimate linear probability model
 lpm <- lm(
-  turnout ~ interest,
+  turnout ~ 
+    interest,
   data = turnout_data
 )
 
@@ -82,7 +83,7 @@ As you can see, one appealing feature of the LPM is that its coefficients are st
 
 **Question:** According to the model, how does a one-unit increase in political interest change the predicted probability of voting?
 
-*Response:*
+*Response:* A one-unit increase in political interest is associated with about a 0.207, or 20.7 percentage point, increase in the predicted probability of voting.
 
 While this may seem quite convenient at first glance, Santiago discussed how one problem associated with a linear probability model is that it can produce predicted probabilities that are negative or exceed 1. Let's take a look:
 
@@ -108,12 +109,13 @@ glm(
 )
 ```
 
-The important new piece is the *family* argument. The family tells `R` about the distribution of out outcome variable, and the *link function* we want to use. For a binary dependent variable, we use the binomial family. Two of the most common link functions are *logit* and *probit*. Let's estimate a logit model using our fake turnout data. 
+The important new piece is the *family* argument. The family tells `R` about the distribution of out outcome variable, and the *link function* we want to use. For a binary dependent variable, we use the binomial family. Two of the most common link functions are *logit* and *probit*. Let's estimate a logit model using our fake turnout data. *Note*: When you inspect the output from the glm model, you'll notice values such as "null deviance" and "AIC." We'll talk more about those next week when we focus on model evaluation and interpretation. 
 
 ```{r turnout logit}
 # estimate logit model on turnout data
 turnout_logit <- glm(
-  turnout ~ interest,
+  turnout ~ 
+    interest,
   data = turnout_data,
   family = binomial(link = "logit")
 )
@@ -121,7 +123,7 @@ turnout_logit <- glm(
 summary(turnout_logit)
 ```
 
-Now generate predicted probabilities from the logit model. We can then compare those the the predictions gathered from the linear probability model we previously estimated. The argument `type = "response"` tells `predict()` that we want predictions on the scale of our dependent variable—in this case, probabilities. As you'll see, the logit model (and probit) produce predicted probabilities that fall between 0 and 1. 
+Now generate predicted probabilities from the logit model. We can then compare those the the predictions gathered from the linear probability model we previously estimated. The argument `type = "response"` tells `predict()` that we want predictions on the scale of our dependent variable—in this case, probabilities. As you'll see, the logit model (and probit) produces predicted probabilities that fall between 0 and 1. 
 
 ```{r pred logit}
 # generate predicted probabilities for logit model
@@ -155,8 +157,13 @@ table(colombia$AUC)
 
 # estimate logit model
 model_logit <- glm(
-  AUC ~ tribut_2_log + tribut_2_log_sq + pop_attacks +
-    disbogota + drugs + pop_log,
+  AUC ~ 
+  tribut_2_log 
+  + tribut_2_log_sq 
+  + pop_attacks 
+  + disbogota 
+  + drugs 
+  + pop_log,
   data = colombia,
   family = binomial(link = "logit")
 )
@@ -166,8 +173,13 @@ summary(model_logit)
 
 # estimate probit model
 model_probit <- glm(
-  AUC ~ tribut_2_log + tribut_2_log_sq + pop_attacks +
-    disbogota + drugs + pop_log,
+  AUC ~ 
+    tribut_2_log 
+    + tribut_2_log_sq 
+    + pop_attacks 
+    + disbogota 
+    + drugs 
+    + pop_log,
   data = colombia,
   family = binomial(link = "probit")
 )
@@ -187,11 +199,11 @@ The coefficients from the logit and probit models are clearly not numerically id
 
 **Question:** Compare the logit and probit models. Do any predictors change direction across the two models? Would you reach dramatically different substantive conclusions from them?
 
-*Response:*
+*Response:* No predictors change direction across the models, and the substantive conclusions are generally the same. The coefficient magnitudes differ because logit and probit use different scales.
 
 ## Interpreting Logit & Probit Models
 
-Logit and probit models give us predicted probabilities that stay between 0 and 1. However, the cofficients are no longer as straightforward to interpret as the coefficients from out linear probability model. For a logit model, the coefficients represent changes in the *log-odds* of the outcome: 
+Logit and probit models give us predicted probabilities that stay between 0 and 1. However, the coefficients are no longer as straightforward to interpret as the coefficients from out linear probability model. For a logit model, the coefficients represent changes in the *log-odds* of the outcome: 
 
 $$
 \log\left(\frac{p_i}{1-p_i}\right)=X_i\beta.
@@ -203,7 +215,30 @@ Log-odds aren't exactly the most intuitive quantity to communicate, so one thing
 - An odds ratio greater than 1 indicates increasing odds.
 - An odds ratio less than 1 indicates decreasing odds.
 
-Let's focus on `pop_attacks`. Inspect and interpret the estimate on `pop_attacks`. 
+Why does exponentiating a logit coefficient give us an odds ratio? Recall that our logit model can be written as:
+
+$$
+\log\left(\frac{p}{1-p}\right)=\alpha+\beta X.
+$$
+
+If we exponentiate both sides, the predicted odds are:
+
+$$
+\frac{p}{1-p}=e^{\alpha+\beta X}.
+$$
+
+Now suppose we increase $X$ by one unit. The ratio of the new odds to the original odds is:
+
+$$
+\frac{e^{\alpha+\beta(X+1)}}{e^{\alpha+\beta X}}
+=
+e^\beta.
+$$
+
+Everything else cancels out! This is why exponentiating a logit coefficient gives us the odds ratio associated with a one-unit increase in that predictor.
+
+
+Now let's apply this, focusing on the logit model we just fit. Inspect and interpret the estimate on `pop_attacks`. 
 
 ```{r odds ratio}
 # inspect logit coefficient for attacks on population
@@ -221,9 +256,9 @@ exp(coef(model_logit)["pop_attacks"])
 
 **Question:** Holding the other variables constant, how is an additional attack on the population associated with the odds of AUC presence?
 
-*Response:*
+*Response:* An additional attack is associated with about a 36.5% increase in the odds of AUC presence.
 
-It's important to remember that odds are **not** probabailities. Odds ratios can be useful, but we often ultimately want to say something about the predicted probability of observing our outcome. We'll spend time next week generating predicted probabilities using the *average case approach* and the *observed value approach*, but for now, we'll focus on using the `predict()` and `plogis()` functions. First, use `predict()` to generate the model's linear predictor. For the logit model, this is the predicted log-odds. To transform them into probabilities, we can use the `plogis()` function. 
+It's important to remember that odds are **not** probabilities. Odds ratios can be useful, but we often ultimately want to say something about the predicted probability of observing our outcome. We'll spend time next week generating predicted probabilities using the *average case approach* and the *observed value approach*, but for now, we'll focus on using the `predict()` and `plogis()` functions. First, use `predict()` to generate the model's linear predictor. For the logit model, this is the predicted log-odds. To transform them into probabilities, we can use the `plogis()` function. 
 
 ```{r log odds}
 # generate predictions on log-odds scale
@@ -320,10 +355,6 @@ Our goal is to find the values of $\beta$ that maximize this quantity.
 
 Usually, convenient functions like `glm()` do all of this work for us. But we can also optimize a likelihood function ourselves using `optim()`.
 
-You may reasonably be thinking that we already have a function that estimates a logit model without requiring all of this extra work. This is true! But understanding optimization will both help you better understand what `glm()` is doing behind the scenes and give you substantially more flexibility when estimating models in your own research that do not fit neatly into an existing modeling function.
-
-For example, suppose we wanted to estimate a model in which the *variance itself is a function of a set of predictors*. A standard call to `glm()` does not allow us to specify an arbitrary regression model for the variance. However, if we can write down the likelihood for that model, we can use `optim()` to estimate it.
-
 ## Optimization
 
 The `optim()` function is a general-purpose optimization function in `R`. Unlike `glm()`, `optim()` has absolutely no idea that we specifically want to estimate a logit model. We're going to have to tell it exactly what function we want it to optimize. For this example, our goal is to reproduce the same logit model we already estimated using `glm()`, but this time we'll do it using `optim()`. 
@@ -415,7 +446,7 @@ cbind(
 ```
 
 
-The two sets of estimates should be extremely close. That is the main point of this exercise!
+The two sets of estimates should be extremely close. That is the main point of this exercise! *Note*: the reason why the values are not identical is because of the starting values we selected when fitting `optim()`. 
 
 We didn't estimate some new model using `optim()`. We manually told `optim()` to estimate the *same logit model* that `glm()` had already estimated for us.
 

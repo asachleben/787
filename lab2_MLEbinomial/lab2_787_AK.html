@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Audrey Sachleben">
-<meta name="dcterms.date" content="2026-08-25">
+<meta name="dcterms.date" content="2026-08-26">
 
 <title>Maximum Likelihood and Binomial Models</title>
 <style>
@@ -135,7 +135,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">August 25, 2026</p>
+      <p class="date">August 26, 2026</p>
     </div>
   </div>
   
@@ -150,7 +150,7 @@ window.Quarto = {
 <section id="binomial-models" class="level2">
 <h2 class="anchored" data-anchor-id="binomial-models">Binomial Models</h2>
 <p>This week in lab we are shifting towards modeling with binary outcomes, or outcomes that can take on only one of two mutually exclusive values. Binary outcomes are exremely common in political science, so knowing how to work effectively with them is critical.</p>
-<p>From POLI 784 you already know how to estimate a linear regression using lm(). So, one reasonable starting point might be to wonder why we wouldn’t also use OLS when our outcome variable is binary? As Santiago discussed in lecture, you actually can, however this creates some important problems. We’ll use those problems to motivate two common binomial models, the logit and the probit, and learn how to estimate them using <code>glm()</code>.</p>
+<p>From POLI 784 you already know how to estimate a linear regression using lm(). So, one reasonable starting point might be to wonder why we wouldn’t also use OLS when our outcome variable is binary. As Santiago discussed in lecture, you actually can, however this creates some important problems. We’ll use those problems to motivate two common binomial models, the logit and the probit, and learn how to estimate them using <code>glm()</code>.</p>
 <p>Finally, we’ll also look under the hood at how these models are estimated, and we’ll use <code>optim()</code> to manually estimate the same logit model we fit using glm().</p>
 </section>
 <section id="script-set-up" class="level2">
@@ -171,7 +171,7 @@ window.Quarto = {
 </section>
 <section id="starting-with-a-linear-probability-model" class="level2">
 <h2 class="anchored" data-anchor-id="starting-with-a-linear-probability-model">Starting with a Linear Probability Model</h2>
-<p>Suppose we have a small survey in which interest measures someone’s level of political interest (0 to 6) and turnout equals 1 if the respondent voted and 0 if the respondent did not vote. We could estimate the relationship between political interest and turnout using the <code>lm()</code> command you are familiar with. When OLS is used with a binary dependent variable, we generally call it a <em>linear probability model (LPM)</em>.</p>
+<p>Suppose we have a small survey in which <code>interest</code> measures someone’s level of political interest (0 to 6) and <code>turnout</code> equals 1 if the respondent voted and 0 if the respondent did not vote. We could estimate the relationship between political interest and turnout using the <code>lm()</code> command you are familiar with. When OLS is used with a binary dependent variable, we generally call it a <em>linear probability model (LPM)</em>.</p>
 <p><em>Note</em>: The data below are fake and are intentionally constructed to make a point, so don’t read anything substantive into them!</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create fake turnout data</span></span>
@@ -202,33 +202,34 @@ window.Quarto = {
 <span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate linear probability model</span></span>
 <span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>lpm <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  turnout <span class="sc">~</span> interest,</span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> turnout_data</span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lpm)</span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Call:</span></span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; lm(formula = turnout ~ interest, data = turnout_data)</span></span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Residuals:</span></span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;     Min      1Q  Median      3Q     Max </span></span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; -0.7071 -0.1214  0.0000  0.1214  0.7071 </span></span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Coefficients:</span></span>
-<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;             Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
-<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; (Intercept) -0.12143    0.06120  -1.984   0.0513 .  </span></span>
-<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; interest     0.20714    0.01697  12.204   &lt;2e-16 ***</span></span>
-<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; ---</span></span>
-<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
-<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
-<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Residual standard error: 0.284 on 68 degrees of freedom</span></span>
-<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Multiple R-squared:  0.6865,   Adjusted R-squared:  0.6819 </span></span>
-<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; F-statistic: 148.9 on 1 and 68 DF,  p-value: &lt; 2.2e-16</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  turnout <span class="sc">~</span> </span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    interest,</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> turnout_data</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lpm)</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Call:</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; lm(formula = turnout ~ interest, data = turnout_data)</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Residuals:</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;     Min      1Q  Median      3Q     Max </span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; -0.7071 -0.1214  0.0000  0.1214  0.7071 </span></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Coefficients:</span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;             Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; (Intercept) -0.12143    0.06120  -1.984   0.0513 .  </span></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; interest     0.20714    0.01697  12.204   &lt;2e-16 ***</span></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; ---</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Residual standard error: 0.284 on 68 degrees of freedom</span></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Multiple R-squared:  0.6865,   Adjusted R-squared:  0.6819 </span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; F-statistic: 148.9 on 1 and 68 DF,  p-value: &lt; 2.2e-16</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>As you can see, one appealing feature of the LPM is that its coefficients are straightforward to interpret. Because <code>turnout</code> is coded 0/1, the coefficient on <code>interest</code> gives us the estimated change in the probability of turnout associated with a one-unit increase in political interest.</p>
 <p><strong>Question:</strong> According to the model, how does a one-unit increase in political interest change the predicted probability of voting?</p>
-<p><em>Response:</em></p>
+<p><em>Response:</em> A one-unit increase in political interest is associated with about a 0.207, or 20.7 percentage point, increase in the predicted probability of voting.</p>
 <p>While this may seem quite convenient at first glance, Santiago discussed how one problem associated with a linear probability model is that it can produce predicted probabilities that are negative or exceed 1. Let’s take a look:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># generate predicted values from linear probability model</span></span>
@@ -251,37 +252,38 @@ window.Quarto = {
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">...</span>(<span class="at">link =</span> <span class="st">"..."</span>)</span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>The important new piece is the <em>family</em> argument. The family tells <code>R</code> about the distribution of out outcome variable, and the <em>link function</em> we want to use. For a binary dependent variable, we use the binomial family. Two of the most common link functions are <em>logit</em> and <em>probit</em>. Let’s estimate a logit model using our fake turnout data.</p>
+<p>The important new piece is the <em>family</em> argument. The family tells <code>R</code> about the distribution of out outcome variable, and the <em>link function</em> we want to use. For a binary dependent variable, we use the binomial family. Two of the most common link functions are <em>logit</em> and <em>probit</em>. Let’s estimate a logit model using our fake turnout data. <em>Note</em>: When you inspect the output from the glm model, you’ll notice values such as “null deviance” and “AIC.” We’ll talk more about those next week when we focus on model evaluation and interpretation.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate logit model on turnout data</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>turnout_logit <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  turnout <span class="sc">~</span> interest,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> turnout_data,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(turnout_logit)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Call:</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; glm(formula = turnout ~ interest, family = binomial(link = "logit"), </span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;     data = turnout_data)</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Coefficients:</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;             Estimate Std. Error z value Pr(&gt;|z|)    </span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; (Intercept)  -7.2456     2.0535  -3.528 0.000418 ***</span></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; interest      2.4152     0.6648   3.633 0.000280 ***</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; ---</span></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; (Dispersion parameter for binomial family taken to be 1)</span></span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;     Null deviance: 97.041  on 69  degrees of freedom</span></span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Residual deviance: 27.294  on 68  degrees of freedom</span></span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; AIC: 31.294</span></span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Number of Fisher Scoring iterations: 7</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  turnout <span class="sc">~</span> </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    interest,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> turnout_data,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(turnout_logit)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Call:</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; glm(formula = turnout ~ interest, family = binomial(link = "logit"), </span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;     data = turnout_data)</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Coefficients:</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;             Estimate Std. Error z value Pr(&gt;|z|)    </span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; (Intercept)  -7.2456     2.0535  -3.528 0.000418 ***</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; interest      2.4152     0.6648   3.633 0.000280 ***</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; ---</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; (Dispersion parameter for binomial family taken to be 1)</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;     Null deviance: 97.041  on 69  degrees of freedom</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Residual deviance: 27.294  on 68  degrees of freedom</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; AIC: 31.294</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Number of Fisher Scoring iterations: 7</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Now generate predicted probabilities from the logit model. We can then compare those the the predictions gathered from the linear probability model we previously estimated. The argument <code>type = "response"</code> tells <code>predict()</code> that we want predictions on the scale of our dependent variable—in this case, probabilities. As you’ll see, the logit model (and probit) produce predicted probabilities that fall between 0 and 1.</p>
+<p>Now generate predicted probabilities from the logit model. We can then compare those the the predictions gathered from the linear probability model we previously estimated. The argument <code>type = "response"</code> tells <code>predict()</code> that we want predictions on the scale of our dependent variable—in this case, probabilities. As you’ll see, the logit model (and probit) produces predicted probabilities that fall between 0 and 1.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># generate predicted probabilities for logit model</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>turnout_data<span class="sc">$</span>logit_prediction <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
@@ -320,98 +322,108 @@ window.Quarto = {
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate logit model</span></span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>model_logit <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  AUC <span class="sc">~</span> tribut_2_log <span class="sc">+</span> tribut_2_log_sq <span class="sc">+</span> pop_attacks <span class="sc">+</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    disbogota <span class="sc">+</span> drugs <span class="sc">+</span> pop_log,</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> colombia,</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>)</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co"># examine model results</span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_logit)</span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Call:</span></span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; glm(formula = AUC ~ tribut_2_log + tribut_2_log_sq + pop_attacks + </span></span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;     disbogota + drugs + pop_log, family = binomial(link = "logit"), </span></span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;     data = colombia)</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  AUC <span class="sc">~</span> </span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  tribut_2_log </span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="sc">+</span> tribut_2_log_sq </span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="sc">+</span> pop_attacks </span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="sc">+</span> disbogota </span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="sc">+</span> drugs </span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="sc">+</span> pop_log,</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> colombia,</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="co"># examine model results</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_logit)</span>
 <span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Coefficients:</span></span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;                   Estimate Std. Error z value Pr(&gt;|z|)    </span></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; (Intercept)     -4.6124385  0.4593284 -10.042  &lt; 2e-16 ***</span></span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; tribut_2_log     0.8385542  0.0774072  10.833  &lt; 2e-16 ***</span></span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; tribut_2_log_sq -0.0317784  0.0059871  -5.308 1.11e-07 ***</span></span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; pop_attacks      0.3111794  0.0180785  17.213  &lt; 2e-16 ***</span></span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; disbogota        0.0017522  0.0001601  10.943  &lt; 2e-16 ***</span></span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; drugs            0.0902158  0.0581690   1.551    0.121    </span></span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; pop_log         -0.1930674  0.0454457  -4.248 2.15e-05 ***</span></span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; ---</span></span>
-<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
-<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; (Dispersion parameter for binomial family taken to be 1)</span></span>
-<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
-<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;     Null deviance: 9910.7  on 13210  degrees of freedom</span></span>
-<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Residual deviance: 8758.6  on 13204  degrees of freedom</span></span>
-<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;   (11473 observations deleted due to missingness)</span></span>
-<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; AIC: 8772.6</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Call:</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; glm(formula = AUC ~ tribut_2_log + tribut_2_log_sq + pop_attacks + </span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;     disbogota + drugs + pop_log, family = binomial(link = "logit"), </span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;     data = colombia)</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Coefficients:</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;                   Estimate Std. Error z value Pr(&gt;|z|)    </span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; (Intercept)     -4.6124385  0.4593284 -10.042  &lt; 2e-16 ***</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; tribut_2_log     0.8385542  0.0774072  10.833  &lt; 2e-16 ***</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; tribut_2_log_sq -0.0317784  0.0059871  -5.308 1.11e-07 ***</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; pop_attacks      0.3111794  0.0180785  17.213  &lt; 2e-16 ***</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; disbogota        0.0017522  0.0001601  10.943  &lt; 2e-16 ***</span></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; drugs            0.0902158  0.0581690   1.551    0.121    </span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; pop_log         -0.1930674  0.0454457  -4.248 2.15e-05 ***</span></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; ---</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; (Dispersion parameter for binomial family taken to be 1)</span></span>
 <span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
-<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Number of Fisher Scoring iterations: 6</span></span>
-<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate probit model</span></span>
-<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>model_probit <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
-<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>  AUC <span class="sc">~</span> tribut_2_log <span class="sc">+</span> tribut_2_log_sq <span class="sc">+</span> pop_attacks <span class="sc">+</span></span>
-<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>    disbogota <span class="sc">+</span> drugs <span class="sc">+</span> pop_log,</span>
-<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> colombia,</span>
-<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"probit"</span>)</span>
-<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a><span class="co"># examine model results</span></span>
-<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_probit)</span>
-<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
-<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Call:</span></span>
-<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; glm(formula = AUC ~ tribut_2_log + tribut_2_log_sq + pop_attacks + </span></span>
-<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;     disbogota + drugs + pop_log, family = binomial(link = "probit"), </span></span>
-<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;     data = colombia)</span></span>
-<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
-<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Coefficients:</span></span>
-<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;                   Estimate Std. Error z value Pr(&gt;|z|)    </span></span>
-<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; (Intercept)     -2.3374214  0.2389584  -9.782  &lt; 2e-16 ***</span></span>
-<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; tribut_2_log     0.3893985  0.0391568   9.945  &lt; 2e-16 ***</span></span>
-<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; tribut_2_log_sq -0.0125022  0.0031486  -3.971 7.17e-05 ***</span></span>
-<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; pop_attacks      0.1773512  0.0104044  17.046  &lt; 2e-16 ***</span></span>
-<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; disbogota        0.0009930  0.0000876  11.336  &lt; 2e-16 ***</span></span>
-<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; drugs            0.0542321  0.0314773   1.723   0.0849 .  </span></span>
-<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; pop_log         -0.1102537  0.0243219  -4.533 5.81e-06 ***</span></span>
-<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; ---</span></span>
-<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
-<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
-<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; (Dispersion parameter for binomial family taken to be 1)</span></span>
-<span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
-<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;     Null deviance: 9910.7  on 13210  degrees of freedom</span></span>
-<span id="cb7-75"><a href="#cb7-75" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Residual deviance: 8742.9  on 13204  degrees of freedom</span></span>
-<span id="cb7-76"><a href="#cb7-76" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;   (11473 observations deleted due to missingness)</span></span>
-<span id="cb7-77"><a href="#cb7-77" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; AIC: 8756.9</span></span>
-<span id="cb7-78"><a href="#cb7-78" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
-<span id="cb7-79"><a href="#cb7-79" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Number of Fisher Scoring iterations: 6</span></span>
-<span id="cb7-80"><a href="#cb7-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-81"><a href="#cb7-81" aria-hidden="true" tabindex="-1"></a><span class="co"># compare logit and probit coefficient estimates</span></span>
-<span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(</span>
-<span id="cb7-83"><a href="#cb7-83" aria-hidden="true" tabindex="-1"></a>  <span class="at">Logit =</span> <span class="fu">coef</span>(model_logit),</span>
-<span id="cb7-84"><a href="#cb7-84" aria-hidden="true" tabindex="-1"></a>  <span class="at">Probit =</span> <span class="fu">coef</span>(model_probit)</span>
-<span id="cb7-85"><a href="#cb7-85" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-86"><a href="#cb7-86" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;                        Logit        Probit</span></span>
-<span id="cb7-87"><a href="#cb7-87" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; (Intercept)     -4.612438544 -2.3374214108</span></span>
-<span id="cb7-88"><a href="#cb7-88" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; tribut_2_log     0.838554175  0.3893984673</span></span>
-<span id="cb7-89"><a href="#cb7-89" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; tribut_2_log_sq -0.031778389 -0.0125021612</span></span>
-<span id="cb7-90"><a href="#cb7-90" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; pop_attacks      0.311179450  0.1773512022</span></span>
-<span id="cb7-91"><a href="#cb7-91" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; disbogota        0.001752227  0.0009929763</span></span>
-<span id="cb7-92"><a href="#cb7-92" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; drugs            0.090215803  0.0542320919</span></span>
-<span id="cb7-93"><a href="#cb7-93" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; pop_log         -0.193067450 -0.1102537069</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;     Null deviance: 9910.7  on 13210  degrees of freedom</span></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Residual deviance: 8758.6  on 13204  degrees of freedom</span></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;   (11473 observations deleted due to missingness)</span></span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; AIC: 8772.6</span></span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Number of Fisher Scoring iterations: 6</span></span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate probit model</span></span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>model_probit <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>  AUC <span class="sc">~</span> </span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>    tribut_2_log </span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a>    <span class="sc">+</span> tribut_2_log_sq </span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a>    <span class="sc">+</span> pop_attacks </span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a>    <span class="sc">+</span> disbogota </span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a>    <span class="sc">+</span> drugs </span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a>    <span class="sc">+</span> pop_log,</span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> colombia,</span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"probit"</span>)</span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a><span class="co"># examine model results</span></span>
+<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_probit)</span>
+<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
+<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Call:</span></span>
+<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; glm(formula = AUC ~ tribut_2_log + tribut_2_log_sq + pop_attacks + </span></span>
+<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;     disbogota + drugs + pop_log, family = binomial(link = "probit"), </span></span>
+<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;     data = colombia)</span></span>
+<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
+<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Coefficients:</span></span>
+<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;                   Estimate Std. Error z value Pr(&gt;|z|)    </span></span>
+<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; (Intercept)     -2.3374214  0.2389584  -9.782  &lt; 2e-16 ***</span></span>
+<span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; tribut_2_log     0.3893985  0.0391568   9.945  &lt; 2e-16 ***</span></span>
+<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; tribut_2_log_sq -0.0125022  0.0031486  -3.971 7.17e-05 ***</span></span>
+<span id="cb7-75"><a href="#cb7-75" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; pop_attacks      0.1773512  0.0104044  17.046  &lt; 2e-16 ***</span></span>
+<span id="cb7-76"><a href="#cb7-76" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; disbogota        0.0009930  0.0000876  11.336  &lt; 2e-16 ***</span></span>
+<span id="cb7-77"><a href="#cb7-77" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; drugs            0.0542321  0.0314773   1.723   0.0849 .  </span></span>
+<span id="cb7-78"><a href="#cb7-78" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; pop_log         -0.1102537  0.0243219  -4.533 5.81e-06 ***</span></span>
+<span id="cb7-79"><a href="#cb7-79" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; ---</span></span>
+<span id="cb7-80"><a href="#cb7-80" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span id="cb7-81"><a href="#cb7-81" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
+<span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; (Dispersion parameter for binomial family taken to be 1)</span></span>
+<span id="cb7-83"><a href="#cb7-83" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
+<span id="cb7-84"><a href="#cb7-84" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;     Null deviance: 9910.7  on 13210  degrees of freedom</span></span>
+<span id="cb7-85"><a href="#cb7-85" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Residual deviance: 8742.9  on 13204  degrees of freedom</span></span>
+<span id="cb7-86"><a href="#cb7-86" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;   (11473 observations deleted due to missingness)</span></span>
+<span id="cb7-87"><a href="#cb7-87" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; AIC: 8756.9</span></span>
+<span id="cb7-88"><a href="#cb7-88" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; </span></span>
+<span id="cb7-89"><a href="#cb7-89" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; Number of Fisher Scoring iterations: 6</span></span>
+<span id="cb7-90"><a href="#cb7-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-91"><a href="#cb7-91" aria-hidden="true" tabindex="-1"></a><span class="co"># compare logit and probit coefficient estimates</span></span>
+<span id="cb7-92"><a href="#cb7-92" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(</span>
+<span id="cb7-93"><a href="#cb7-93" aria-hidden="true" tabindex="-1"></a>  <span class="at">Logit =</span> <span class="fu">coef</span>(model_logit),</span>
+<span id="cb7-94"><a href="#cb7-94" aria-hidden="true" tabindex="-1"></a>  <span class="at">Probit =</span> <span class="fu">coef</span>(model_probit)</span>
+<span id="cb7-95"><a href="#cb7-95" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-96"><a href="#cb7-96" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;                        Logit        Probit</span></span>
+<span id="cb7-97"><a href="#cb7-97" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; (Intercept)     -4.612438544 -2.3374214108</span></span>
+<span id="cb7-98"><a href="#cb7-98" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; tribut_2_log     0.838554175  0.3893984673</span></span>
+<span id="cb7-99"><a href="#cb7-99" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; tribut_2_log_sq -0.031778389 -0.0125021612</span></span>
+<span id="cb7-100"><a href="#cb7-100" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; pop_attacks      0.311179450  0.1773512022</span></span>
+<span id="cb7-101"><a href="#cb7-101" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; disbogota        0.001752227  0.0009929763</span></span>
+<span id="cb7-102"><a href="#cb7-102" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; drugs            0.090215803  0.0542320919</span></span>
+<span id="cb7-103"><a href="#cb7-103" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; pop_log         -0.193067450 -0.1102537069</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>The coefficients from the logit and probit models are clearly not numerically identical. That is okay! Logit and probit use different link functions, so the coefficient estimates operate on different scales. The direction of the estimates and the general substantive patterns of the relationships between predictors and the outcome should remain relatively similar, even though the estimates are different.</p>
 <p><strong>Question:</strong> Compare the logit and probit models. Do any predictors change direction across the two models? Would you reach dramatically different substantive conclusions from them?</p>
-<p><em>Response:</em></p>
+<p><em>Response:</em> No predictors change direction across the models, and the substantive conclusions are generally the same. The coefficient magnitudes differ because logit and probit use different scales.</p>
 <section id="interpreting-logit-probit-models" class="level2">
 <h2 class="anchored" data-anchor-id="interpreting-logit-probit-models">Interpreting Logit &amp; Probit Models</h2>
-<p>Logit and probit models give us predicted probabilities that stay between 0 and 1. However, the cofficients are no longer as straightforward to interpret as the coefficients from out linear probability model. For a logit model, the coefficients represent changes in the <em>log-odds</em> of the outcome:</p>
+<p>Logit and probit models give us predicted probabilities that stay between 0 and 1. However, the coefficients are no longer as straightforward to interpret as the coefficients from out linear probability model. For a logit model, the coefficients represent changes in the <em>log-odds</em> of the outcome:</p>
 <p><span class="math display">\[
 \log\left(\frac{p_i}{1-p_i}\right)=X_i\beta.
 \]</span></p>
@@ -421,7 +433,22 @@ window.Quarto = {
 <li>An odds ratio greater than 1 indicates increasing odds.</li>
 <li>An odds ratio less than 1 indicates decreasing odds.</li>
 </ul>
-<p>Let’s focus on <code>pop_attacks</code>. Inspect and interpret the estimate on <code>pop_attacks</code>.</p>
+<p>Why does exponentiating a logit coefficient give us an odds ratio? Recall that our logit model can be written as:</p>
+<p><span class="math display">\[
+\log\left(\frac{p}{1-p}\right)=\alpha+\beta X.
+\]</span></p>
+<p>If we exponentiate both sides, the predicted odds are:</p>
+<p><span class="math display">\[
+\frac{p}{1-p}=e^{\alpha+\beta X}.
+\]</span></p>
+<p>Now suppose we increase <span class="math inline">\(X\)</span> by one unit. The ratio of the new odds to the original odds is:</p>
+<p><span class="math display">\[
+\frac{e^{\alpha+\beta(X+1)}}{e^{\alpha+\beta X}}
+=
+e^\beta.
+\]</span></p>
+<p>Everything else cancels out! This is why exponentiating a logit coefficient gives us the odds ratio associated with a one-unit increase in that predictor.</p>
+<p>Now let’s apply this, focusing on the logit model we just fit. Inspect and interpret the estimate on <code>pop_attacks</code>.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># inspect logit coefficient for attacks on population</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(model_logit)[<span class="st">"pop_attacks"</span>]</span>
@@ -441,8 +468,8 @@ window.Quarto = {
 <span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt;    36.50342</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><strong>Question:</strong> Holding the other variables constant, how is an additional attack on the population associated with the odds of AUC presence?</p>
-<p><em>Response:</em></p>
-<p>It’s important to remember that odds are <strong>not</strong> probabailities. Odds ratios can be useful, but we often ultimately want to say something about the predicted probability of observing our outcome. We’ll spend time next week generating predicted probabilities using the <em>average case approach</em> and the <em>observed value approach</em>, but for now, we’ll focus on using the <code>predict()</code> and <code>plogis()</code> functions. First, use <code>predict()</code> to generate the model’s linear predictor. For the logit model, this is the predicted log-odds. To transform them into probabilities, we can use the <code>plogis()</code> function.</p>
+<p><em>Response:</em> An additional attack is associated with about a 36.5% increase in the odds of AUC presence.</p>
+<p>It’s important to remember that odds are <strong>not</strong> probabilities. Odds ratios can be useful, but we often ultimately want to say something about the predicted probability of observing our outcome. We’ll spend time next week generating predicted probabilities using the <em>average case approach</em> and the <em>observed value approach</em>, but for now, we’ll focus on using the <code>predict()</code> and <code>plogis()</code> functions. First, use <code>predict()</code> to generate the model’s linear predictor. For the logit model, this is the predicted log-odds. To transform them into probabilities, we can use the <code>plogis()</code> function.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># generate predictions on log-odds scale</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>logit_linear_prediction <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
@@ -521,8 +548,6 @@ y_i\log(p_i)
 \]</span></p>
 <p>Our goal is to find the values of <span class="math inline">\(\beta\)</span> that maximize this quantity.</p>
 <p>Usually, convenient functions like <code>glm()</code> do all of this work for us. But we can also optimize a likelihood function ourselves using <code>optim()</code>.</p>
-<p>You may reasonably be thinking that we already have a function that estimates a logit model without requiring all of this extra work. This is true! But understanding optimization will both help you better understand what <code>glm()</code> is doing behind the scenes and give you substantially more flexibility when estimating models in your own research that do not fit neatly into an existing modeling function.</p>
-<p>For example, suppose we wanted to estimate a model in which the <em>variance itself is a function of a set of predictors</em>. A standard call to <code>glm()</code> does not allow us to specify an arbitrary regression model for the variance. However, if we can write down the likelihood for that model, we can use <code>optim()</code> to estimate it.</p>
 </section>
 <section id="optimization" class="level2">
 <h2 class="anchored" data-anchor-id="optimization">Optimization</h2>
@@ -659,7 +684,7 @@ y_i\log(p_i)
 <span id="cb12-70"><a href="#cb12-70" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; drugs            0.090215803  0.087970340</span></span>
 <span id="cb12-71"><a href="#cb12-71" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;&gt;&gt; pop_log         -0.193067450 -0.167065804</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>The two sets of estimates should be extremely close. That is the main point of this exercise!</p>
+<p>The two sets of estimates should be extremely close. That is the main point of this exercise! <em>Note</em>: the reason why the values are not identical is because of the starting values we selected when fitting <code>optim()</code>.</p>
 <p>We didn’t estimate some new model using <code>optim()</code>. We manually told <code>optim()</code> to estimate the <em>same logit model</em> that <code>glm()</code> had already estimated for us.</p>
 </section>
 <section id="standard-errors" class="level1">

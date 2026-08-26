@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Audrey Sachleben">
-<meta name="dcterms.date" content="2026-08-25">
+<meta name="dcterms.date" content="2026-08-26">
 
 <title>Maximum Likelihood and Binomial Models</title>
 <style>
@@ -135,7 +135,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">August 25, 2026</p>
+      <p class="date">August 26, 2026</p>
     </div>
   </div>
   
@@ -219,7 +219,7 @@ window.Quarto = {
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">...</span>(<span class="at">link =</span> <span class="st">"..."</span>)</span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>The important new piece is the <em>family</em> argument. The family tells <code>R</code> about the distribution of out outcome variable, and the <em>link function</em> we want to use. For a binary dependent variable, we use the binomial family. Two of the most common link functions are <em>logit</em> and <em>probit</em>. Let’s estimate a logit model using our fake turnout data.</p>
+<p>The important new piece is the <em>family</em> argument. The family tells <code>R</code> about the distribution of out outcome variable, and the <em>link function</em> we want to use. For a binary dependent variable, we use the binomial family. Two of the most common link functions are <em>logit</em> and <em>probit</em>. Let’s estimate a logit model using our fake turnout data. <em>Note</em>: When you inspect the output from the glm model, you’ll notice values such as “null deviance” and “AIC.” We’ll talk more about those next week when we focus on model evaluation and interpretation.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate logit model on turnout data</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>turnout_logit <span class="ot">&lt;-</span> <span class="fu">______</span>(</span>
@@ -230,7 +230,7 @@ window.Quarto = {
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(turnout_logit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Now generate predicted probabilities from the logit model. We can then compare those the the predictions gathered from the linear probability model we previously estimated. The argument <code>type = "response"</code> tells <code>predict()</code> that we want predictions on the scale of our dependent variable—in this case, probabilities. As you’ll see, the logit model (and probit) produce predicted probabilities that fall between 0 and 1.</p>
+<p>Now generate predicted probabilities from the logit model. We can then compare those the the predictions gathered from the linear probability model we previously estimated. The argument <code>type = "response"</code> tells <code>predict()</code> that we want predictions on the scale of our dependent variable—in this case, probabilities. As you’ll see, the logit model (and probit) produces predicted probabilities that fall between 0 and 1.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># generate predicted probabilities for logit model</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>turnout_data<span class="sc">$</span>logit_prediction <span class="ot">&lt;-</span> <span class="fu">________</span>(</span>
@@ -261,7 +261,7 @@ window.Quarto = {
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(colombia<span class="sc">$</span>AUC)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate logit model</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>model_logit <span class="ot">&lt;-</span> _____________</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>model_logit <span class="ot">&lt;-</span> ________________</span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># examine model results</span></span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_logit)</span>
@@ -283,7 +283,7 @@ window.Quarto = {
 <p><em>Response:</em></p>
 <section id="interpreting-logit-probit-models" class="level2">
 <h2 class="anchored" data-anchor-id="interpreting-logit-probit-models">Interpreting Logit &amp; Probit Models</h2>
-<p>Logit and probit models give us predicted probabilities that stay between 0 and 1. However, the cofficients are no longer as straightforward to interpret as the coefficients from out linear probability model. For a logit model, the coefficients represent changes in the <em>log-odds</em> of the outcome:</p>
+<p>Logit and probit models give us predicted probabilities that stay between 0 and 1. However, the coefficients are no longer as straightforward to interpret as the coefficients from out linear probability model. For a logit model, the coefficients represent changes in the <em>log-odds</em> of the outcome:</p>
 <p><span class="math display">\[
 \log\left(\frac{p_i}{1-p_i}\right)=X_i\beta.
 \]</span></p>
@@ -293,7 +293,22 @@ window.Quarto = {
 <li>An odds ratio greater than 1 indicates increasing odds.</li>
 <li>An odds ratio less than 1 indicates decreasing odds.</li>
 </ul>
-<p>Let’s focus on <code>pop_attacks</code>. Inspect and interpret the estimate on <code>pop_attacks</code>.</p>
+<p>Why does exponentiating a logit coefficient give us an odds ratio? Recall that our logit model can be written as:</p>
+<p><span class="math display">\[
+\log\left(\frac{p}{1-p}\right)=\alpha+\beta X.
+\]</span></p>
+<p>If we exponentiate both sides, the predicted odds are:</p>
+<p><span class="math display">\[
+\frac{p}{1-p}=e^{\alpha+\beta X}.
+\]</span></p>
+<p>Now suppose we increase <span class="math inline">\(X\)</span> by one unit. The ratio of the new odds to the original odds is:</p>
+<p><span class="math display">\[
+\frac{e^{\alpha+\beta(X+1)}}{e^{\alpha+\beta X}}
+=
+e^\beta.
+\]</span></p>
+<p>Everything else cancels out! This is why exponentiating a logit coefficient gives us the odds ratio associated with a one-unit increase in that predictor.</p>
+<p>Now let’s apply this, focusing on the logit model we just fit. Inspect and interpret the estimate on <code>pop_attacks</code>.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># inspect logit coefficient for attacks on population</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(model_logit)[<span class="st">"pop_attacks"</span>]</span>
@@ -308,7 +323,7 @@ window.Quarto = {
 </div>
 <p><strong>Question:</strong> Holding the other variables constant, how is an additional attack on the population associated with the odds of AUC presence?</p>
 <p><em>Response:</em></p>
-<p>It’s important to remember that odds are <strong>not</strong> probabailities. Odds ratios can be useful, but we often ultimately want to say something about the predicted probability of observing our outcome. We’ll spend time next week generating predicted probabilities using the <em>average case approach</em> and the <em>observed value approach</em>, but for now, we’ll focus on using the <code>predict()</code> and <code>plogis()</code> functions. First, use <code>predict()</code> to generate the model’s linear predictor. For the logit model, this is the predicted log-odds. To transform them into probabilities, we can use the <code>plogis()</code> function.</p>
+<p>It’s important to remember that odds are <strong>not</strong> probabilities. Odds ratios can be useful, but we often ultimately want to say something about the predicted probability of observing our outcome. We’ll spend time next week generating predicted probabilities using the <em>average case approach</em> and the <em>observed value approach</em>, but for now, we’ll focus on using the <code>predict()</code> and <code>plogis()</code> functions. First, use <code>predict()</code> to generate the model’s linear predictor. For the logit model, this is the predicted log-odds. To transform them into probabilities, we can use the <code>plogis()</code> function.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># generate predictions on log-odds scale</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>logit_linear_prediction <span class="ot">&lt;-</span> <span class="fu">__________</span>(</span>
@@ -381,8 +396,6 @@ y_i\log(p_i)
 \]</span></p>
 <p>Our goal is to find the values of <span class="math inline">\(\beta\)</span> that maximize this quantity.</p>
 <p>Usually, convenient functions like <code>glm()</code> do all of this work for us. But we can also optimize a likelihood function ourselves using <code>optim()</code>.</p>
-<p>You may reasonably be thinking that we already have a function that estimates a logit model without requiring all of this extra work. This is true! But understanding optimization will both help you better understand what <code>glm()</code> is doing behind the scenes and give you substantially more flexibility when estimating models in your own research that do not fit neatly into an existing modeling function.</p>
-<p>For example, suppose we wanted to estimate a model in which the <em>variance itself is a function of a set of predictors</em>. A standard call to <code>glm()</code> does not allow us to specify an arbitrary regression model for the variance. However, if we can write down the likelihood for that model, we can use <code>optim()</code> to estimate it.</p>
 </section>
 <section id="optimization" class="level2">
 <h2 class="anchored" data-anchor-id="optimization">Optimization</h2>
@@ -468,7 +481,7 @@ y_i\log(p_i)
 <span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">OPTIM =</span> __________</span>
 <span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>The two sets of estimates should be extremely close. That is the main point of this exercise!</p>
+<p>The two sets of estimates should be extremely close. That is the main point of this exercise! <em>Note</em>: the reason why the values are not identical is because of the starting values we selected when fitting <code>optim()</code>.</p>
 <p>We didn’t estimate some new model using <code>optim()</code>. We manually told <code>optim()</code> to estimate the <em>same logit model</em> that <code>glm()</code> had already estimated for us.</p>
 </section>
 <section id="standard-errors" class="level1">
