@@ -2,13 +2,13 @@
 title: "Lab 3: Model Evaluation and Interpretation"
 format: html
 author: "Audrey Sachleben" 
-date: "September 4, 2026"
+date: "September 4, 2026" 
 ---
 
 ```{r setup, include=FALSE}
 # set output options for rendered file
 knitr::opts_chunk$set(
-  eval = TRUE, # evaluate code in rendered output
+  eval = FALSE, # evaluate code in rendered output
   echo = TRUE, # show code in rendered output
   include = TRUE, # include output in rendered output
   message = FALSE, # hide messages in rendered output
@@ -100,19 +100,19 @@ The other predictors are:
 
 - `male`: candidate gender
 
-```{r}
+```{r, eval = FALSE}
 
 # fit logit model
-model_logit <- glm(
-  immigration ~ 
-    quality_cand 
-    + contested_primary 
-    + district_lean 
-    + log_fundraising 
-    + cand_party 
-    + male,
+model_logit <- ______(
+  ______ ~ 
+    ______ 
+    + ______ 
+    + ______ 
+    + ________ 
+    + ______ 
+    + ________,
   data = lab_data,
-  family = binomial(link = "logit")
+  ______ = ________(______ = "______")
 )
 
 # inspect the output
@@ -126,7 +126,7 @@ Look specifically at the coefficient on `district_lean`.
 
 **Question:** What can we learn immediately from this coefficient? What can we *not* learn immediately from the coefficient?
 
-*Response:* The sign tells us whether more favorable districts are associated with higher or lower log-odds of discussing immigration. We cannot directly interpret the coefficient as a change in probability.
+*Response:* 
 
 Recall that a logit coefficient represents a change in log-odds, not a constant change in probability. We can use the coefficient to determine the direction of the relationship, but it is often easier to communicate the substantive relationship using predicted probabilities.
 
@@ -134,11 +134,11 @@ Recall that a logit coefficient represents a change in log-odds, not a constant 
 
 Before we introduce simulation, let's first generate a predicted probability for every candidate in our estimation sample.
 
-```{r}
+```{r, eval = FALSE}
 # generate fitted probabilities for candidates in estimation sample
-predicted_probabilities <- predict(
-  model_logit,
-  type = "response"
+predicted_probabilities <- ________(
+  ________,
+  ______ = "________"
 )
 
 # inspect range of predictions
@@ -155,14 +155,14 @@ Our fitted model gives us a vector of coefficient estimates, $\hat{\beta}$, and 
 
 Rather than treating the estimated coefficients as known with certainty, we can draw many sets of coefficients from their approximate sampling distribution. For each simulated set of coefficients, we then calculate the predicted probability we care about.
 
-First, set a seed for reproducibility and choose the number of simulations.
+First, set a seed for reproducibility and choose the number of simulations. We'll use 1,000. 
 
-```{r}
+```{r, eval = FALSE}
 # set seed for reproducibility
 set.seed(9692)
 
 # number of simulations
-n_sim <- 1000
+n_sim <- ______
 ```
 
 We'll use `mvrnorm()` from the `MASS` package to draw 1,000 simulated coefficient vectors from a multivariate normal distribution centered on our estimated coefficients. The function takes three main arguments:
@@ -175,18 +175,18 @@ We'll use `mvrnorm()` from the `MASS` package to draw 1,000 simulated coefficien
 
 Using the full variance-covariance matrix is important because the uncertainty in our coefficient estimates is not necessarily independent. `mvrnorm()` preserves these relationships when drawing sets of coefficients.
 
-```{r}
+```{r, eval = FALSE}
 # simulate coefficient vectors
-beta_sims <- MASS::mvrnorm(
-  n = n_sim,
-  mu = coef(model_logit),
-  Sigma = vcov(model_logit)
+beta_sims <- MASS::______(
+  n = ______,
+  mu = ______(________),
+  Sigma = ________(______)
 )
 
 # inspect dimensions
 dim(beta_sims)
 
-# inspect the mean coefficients for the simulated data - how do they compare to the model coefficients?
+# inspect the mean coefficients for the simulated data
 colMeans(beta_sims)
 
 ```
@@ -197,7 +197,7 @@ Because we drew these simulated coefficients from a multivariate normal distribu
 
 **Question:** Why do we simulate the coefficients rather than calculate predicted probabilities using only the coefficients from the logit mdoel (`coef(model_logit)`)?
 
-*Response:* Simulation incorporates uncertainty in the estimated coefficients. This allows us to generate a distribution of predicted probabilities and construct uncertainty intervals around them.
+*Response:* 
 
 The key idea is that we can now calculate our quantity of interest under 1,000 simulated versions of our fitted model. The distribution of those simulated quantities gives us a way to summarize both our point estimate and our uncertainty. 
 
@@ -276,15 +276,15 @@ dim(hyp_matrix)
 
 **Question:** Why do we need to convert `hyp_data` into a model matrix before multiplying it by our simulated coefficients?
 
-*Response:* The simulated coefficients correspond to the columns of the design matrix used by the model, including the intercept and indicator variables for factors. `model.matrix()` puts the hypothetical observations into exactly that structure.
+*Response:* 
 
 Now we can calculate the predicted probability for each hypothetical candidate under each simulated set of coefficients.
 
 Remember that multiplying the design matrix by our coefficients gives us the linear predictor, $X\beta$, which is expressed in log-odds for a logit model. We use `plogis()` to transform those values back into probabilities.
 
-```{r}
+```{r, eval = FALSE}
 # calculate simulated predicted probabilities
-average_pp <- plogis(
+average_pp <- ________(
   hyp_matrix %*% t(beta_sims)
 )
 
@@ -294,26 +294,26 @@ dim(average_pp)
 
 The rows of `average_pp` correspond to values of `district_lean`, while the columns correspond to our 1,000 simulated coefficient vectors. We can now summarize those simulations at each value of `district_lean`.
 
-```{r}
+```{r, eval = FALSE}
 # summarize simulated predicted probabilities
 average_output <- data.frame(
   district_lean = district_vec,
   # average predicted probability across simulations
   pp_avg = apply(
-    average_pp,
+    ______,
     1,
     mean
   ),
  # lower bound of 95% confidence interval
   lb = apply(
-    average_pp,
+    ______,
     1,
     quantile,
     probs = 0.025
   ),
   # upper bound of 95% confidence interval
   ub = apply(
-    average_pp,
+    ________,
     1,
     quantile,
     probs = 0.975
@@ -326,16 +326,17 @@ head(average_output)
 
 Finally, plot the predicted probabilities and simulation-based 95% intervals.
 
-```{r}
+```{r, eval = FALSE}
 # plot average-case predicted probabilities
 ggplot(
   average_output,
-  aes(x = district_lean, y = pp_avg)
+  aes(x = ________, y = __________)
 ) +
+# create confidence intervals
   geom_ribbon(
     aes(
-      ymin = lb,
-      ymax = ub
+      ymin = ______,
+      ymax = ______
     ),
     alpha = 0.25
   ) +
@@ -349,11 +350,11 @@ ggplot(
 
 **Question:** For the hypothetical candidate we constructed, what happens to the predicted probability of discussing immigration as the district becomes more favorable to the candidate's party?
 
-*Response:* As the district becomes more favorable to the candidate's party, the predicted probability of the candidate discussing immigration increases.
+*Response:* 
 
 **Question:** Who exactly does this curve describe? Which values in our hypothetical candidate did we choose ourselves?
 
-*Response:* It describes an inexperienced Democratic male challenger in a contested primary with fundraising held at its mean. We chose all of those characteristics; only `district_lean` varies.
+*Response:* 
 
 This second question points to an important limitation of the average-case approach. We get an intuitive prediction for one clearly defined hypothetical candidate, but the marginal change in predicted probability can depend on which hypothetical candidate we choose. For example, if we were comparing among Republican incumbent candidates, there might be a different marginal effect for `district_lean` on the probability of discussing immigration.
 
@@ -378,7 +379,7 @@ First, pull the original design matrix from our fitted model.
 
 ```{r}
 # create design matrix using observed covariate values
-observed_matrix <- model.matrix(model_logit)
+observed_matrix <- model.________(model_logit)
 
 # inspect dimensions
 dim(observed_matrix)
@@ -433,20 +434,20 @@ observed_output <- data.frame(
   district_lean = district_vec,
 # average predicted probability across simulations
   pp_avg = apply(
-    observed_sims,
+    ______,
     2,
     mean
   ),
 # lower bound of 95% confidence interval
   lb = apply(
-    observed_sims,
+    ________,
     2,
     quantile,
     probs = 0.025
   ),
 # lower bound of 95% confidence interval
   ub = apply(
-    observed_sims,
+    ______,
     2,
     quantile,
     probs = 0.975
@@ -463,12 +464,12 @@ Plot the observed-case results.
 # plot observed-case predicted probabilities
 ggplot(
   observed_output,
-  aes(x = district_lean, y = pp_avg)
+  aes(x = ______, y = ________)
 ) +
   geom_ribbon(
     aes(
-      ymin = lb,
-      ymax = ub
+      ymin = ________,
+      ymax = ________
     ),
     alpha = 0.25
   ) +
@@ -482,11 +483,11 @@ ggplot(
 
 **Question:** In the observed-case approach, which variable did we change and which variables did we leave at their observed values?
 
-*Response:* We changed `district_lean` by assigning the same hypothetical value to every candidate. Candidate type, fundraising, party, primary competition, and gender remained at their observed values.
+*Response:* 
 
 **Question:** What are we averaging over at each value of `district_lean`?
 
-*Response:* We first average predicted probabilities across all candidates in the estimation sample for each simulated coefficient vector. We then summarize those simulated averages to obtain the point estimate and confidence interval.
+*Response:* 
 
 
 ## Comparing Average-Case and Observed-Case Predictions
@@ -532,11 +533,11 @@ Because the logit model is nonlinear, calculating a prediction for a candidate w
 
 **Question:** Why aren't the average-case and observed-case predictions identical?
 
-*Response:* The average-case approach predicts for one selected hypothetical candidate, while the observed-case approach averages predictions across many different observed candidates.
+*Response:* 
 
 **Question:** Suppose your substantive goal were to describe how predicted immigration discussion changes across district lean for the population of candidates represented in this dataset. Which approach would you prefer, and why?
 
-*Response:* The observed-case approach is preferable because it retains the actual distribution of candidate characteristics in the estimation sample. It therefore describes the candidates represented in the data more directly.
+*Response:* 
 
 
 ## Evaluating Model Discrimination
@@ -567,10 +568,10 @@ Importantly, these two vectors line up observation by observation. For each cand
 
 ```{r}
 # create ROC curve
-model_roc <- roc(
-  predictions = predict(
-    model_logit,
-    type = "response"
+model_roc <- ______(
+  predictions = ______(
+    ______,
+    ________ = "______"
   ),
   labels = as.factor(
     model.response(
@@ -580,13 +581,13 @@ model_roc <- roc(
 )
 
 # plot ROC curve
-plot(model_roc)
+______(________)
 
 ```
 
 **Question:** What would we expect the ROC curve to look like if our model were no better than random at distinguishing candidates who discuss immigration from candidates who do not?
 
-*Response:* It would follow approximately the 45-degree diagonal from the lower-left to the upper-right corner. This corresponds to an AUROC of about 0.5.
+*Response:* 
 
 
 ### Area Under the ROC Curve
@@ -594,8 +595,8 @@ plot(model_roc)
 Rather than interpreting the entire ROC curve visually, we can summarize its discriminatory ability using the **area under the ROC curve (AUROC)**. You will also commonly see this referred to simply as the **AUC**.
 
 ```{r}
-# calculate AUROC
-auc(model_roc)
+# calculate AUROC ('auc' command)
+______(______)
 ```
 
 AUROC ranges from 0 to 1. A value of 0.5 indicates no discriminatory ability, while a value of 1 indicates perfect discrimination. Values below 0.5 indicate that the model is systematically ranking the two groups in the wrong direction.
@@ -604,8 +605,7 @@ A useful substantive interpretation is to imagine randomly selecting one candida
 
 **Question:** What is the AUROC for our model? Interpret that value in the context of candidates discussing immigration.
 
-*Response:* The AUROC is 0.642, meaning the model has modest discriminatory ability. If we randomly selected one candidate who discusses immigration and one who does not, the model would assign the higher predicted probability to the candidate who discusses immigration about 64\% of the time.
-
+*Response:* 
 
 *Note:* The ROC curve and AUROC above are calculated using the *same observations used to estimate the model*. They therefore describe the model's *in-sample discrimination*. They do not tell us how well the model would perform on entirely new candidates that were not used to estimate it. Evaluating out-of-sample performance requires a separate test sample or a procedure such as cross-validation.
 
